@@ -3,6 +3,9 @@
 
 #include "SmileawayCharacter.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
+
 // Sets default values
 ASmileawayCharacter::ASmileawayCharacter()
 {
@@ -11,11 +14,65 @@ ASmileawayCharacter::ASmileawayCharacter()
 
 }
 
+
+void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
+{
+	const auto Location = GetActorLocation();
+	const auto Forward = GetActorForwardVector();
+	
+	FCollisionShape Box = FCollisionShape::MakeBox(FVector{0.f, AttackData.HitboxHalfWidth, AttackData.HitboxHalfHeight});
+	TArray<FHitResult> Hits;
+	// GetWorld()->SweepMultiByChannel(
+	// 	Hits,
+	// 	Location + Forward * AttackData.RangeMin,
+	// 	Location + Forward * AttackData.RangeMax,
+	// 	GetActorRotation().Quaternion(),
+	// 	ECC_GameTraceChannel1,
+	// 	Box
+	// );
+	TArray<AActor*> ActorsToIgnore = {this};
+	UKismetSystemLibrary::BoxTraceMulti(
+		this,
+		Location + Forward * AttackData.RangeMin,
+		Location + Forward * AttackData.RangeMax,
+		Box.GetBox(),
+		GetActorRotation(),
+		UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1),
+		false,
+		ActorsToIgnore,
+		EDrawDebugTrace::ForDuration,
+		Hits,
+		true
+	);
+	
+	for (const FHitResult& Hit : Hits)
+	{
+		AActor* HitActor = Hit.GetActor();
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, TEXT("Hit something!"));
+		if (HitActor && HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
+		{
+			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, this);
+		}
+	}
+}
+
 // Called when the game starts or when spawned
 void ASmileawayCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
+{
+	if (HitParticleSystem)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, HitParticleSystem, ImpactPoint);
+	}
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
+	}
 }
 
 void ASmileawayCharacter::Attack()
