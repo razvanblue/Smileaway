@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CharacterTypes.h"
 #include "GameFramework/Character.h"
 #include "Smileaway/Animation/AnimationData.h"
 #include "Smileaway/Interfaces/HitInterface.h"
@@ -21,7 +22,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, double DamageAmount, AActor* Hitter) override;
 	
 	virtual void Attack();
 	
@@ -35,6 +36,12 @@ protected:
 	void PlayMontageSection(UAnimMontage* Montage, int32 SectionIndex) const;
 	
 	void PlayRandomMontageSection(UAnimMontage* Montage) const;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Character Stats")
+	EActionState ActionState = EActionState::Unoccupied;
+	
+	UPROPERTY(EditAnywhere, Category = "Character Stats")
+	TObjectPtr<class UCharacterStats> Stats;
 	
 	UPROPERTY(EditAnywhere, Category = Montages)
 	TObjectPtr<UAnimMontage> AttackMontage;

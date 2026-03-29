@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "SmileawayCharacter.h"
-#include "CharacterTypes.h"
 #include "PlayerCharacter.generated.h"
 
 class UAnimMontage;
@@ -72,8 +71,6 @@ private:
 	void InitializeGameOverlay();
 	
 	bool CanMove();
-	
-	EActionState ActionState = EActionState::Unoccupied;
 	
 	int32 ComboCounter = 0;
 	int32 MaxCombo = 0;

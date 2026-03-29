@@ -3,15 +3,20 @@
 
 #include "SmileawayCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Smileaway/Components/CharacterStats.h"
 
 // Sets default values
 ASmileawayCharacter::ASmileawayCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Stats = CreateDefaultSubobject<UCharacterStats>(TEXT("Character Stats"));
+	
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
 }
 
 
@@ -51,7 +56,7 @@ void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, TEXT("Hit something!"));
 		if (HitActor && HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
 		{
-			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, this);
+			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, AttackData.AttackMultiplier * Stats->GetAttack(), this);
 		}
 	}
 }
@@ -63,8 +68,10 @@ void ASmileawayCharacter::BeginPlay()
 	
 }
 
-void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
+void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, double DamageAmount, AActor* Hitter)
 {
+	if (ActionState == EActionState::Dead) return;
+	
 	if (HitParticleSystem)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, HitParticleSystem, ImpactPoint);
@@ -72,6 +79,12 @@ void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, AAct
 	if (HitSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
+	}
+	
+	Stats->TakeDamage(DamageAmount);
+	if (!Stats->IsAlive())
+	{
+		OnDeath();
 	}
 }
 
@@ -85,6 +98,16 @@ void ASmileawayCharacter::AttackEnd()
 
 void ASmileawayCharacter::OnDeath()
 {
+	ActionState = EActionState::Dead;
+	
+	Controller->UnPossess();
+	
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+	{
+		AnimInstance->StopAllMontages(0.f);
+	}
+	
+	Destroy();
 }
 
 void ASmileawayCharacter::PlayMontageSection(UAnimMontage* Montage, const FName& SectionName) const
