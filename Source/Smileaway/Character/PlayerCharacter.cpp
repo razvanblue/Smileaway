@@ -44,6 +44,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(LookInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(AttackInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
+		EnhancedInputComponent->BindAction(HeavyAttackInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::HeavyAttack);
 		EnhancedInputComponent->BindAction(InteractInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Interact);
 	}
 }
@@ -99,6 +100,18 @@ void APlayerCharacter::Attack()
 	}
 	
 	Super::Attack();
+}
+
+void APlayerCharacter::HeavyAttack()
+{
+	bool bCanAttack = AttackMontage && (ActionState & EActionState::CanAttack) != EActionState::None;
+	if (bCanAttack && !GetWorldTimerManager().IsTimerActive(CooldownTimer))
+	{
+		ActionState = EActionState::Attacking;
+		ComboCounter = 0;
+		PlayMontageSection(SpecialAttackMontage, 0);
+		GetWorldTimerManager().SetTimer(CooldownTimer, this, &ThisClass::Interact, SpecialCooldown, false);
+	}
 }
 
 void APlayerCharacter::Interact()

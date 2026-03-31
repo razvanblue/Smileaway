@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Smileaway/UI/HealthBarWidgetComponent.h"
 #include "Smileaway/Components/CharacterStats.h"
 
 // Sets default values
@@ -14,6 +15,9 @@ ASmileawayCharacter::ASmileawayCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Stats = CreateDefaultSubobject<UCharacterStats>(TEXT("Character Stats"));
+	
+	HealthBarWidget = CreateDefaultSubobject<UHealthBarWidgetComponent>(TEXT("Health Bar Component"));
+	HealthBarWidget->SetupAttachment(GetRootComponent());
 	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
@@ -66,6 +70,8 @@ void ASmileawayCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	HealthBarWidget->SetHealthPercent(Stats->GetHealthPercentage());
+	Stats->OnHealthChanged.AddDynamic(HealthBarWidget, &UHealthBarWidgetComponent::SetHealthPercent);
 }
 
 void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, double DamageAmount, AActor* Hitter)
@@ -106,8 +112,6 @@ void ASmileawayCharacter::OnDeath()
 	{
 		AnimInstance->StopAllMontages(0.f);
 	}
-	
-	Destroy();
 }
 
 void ASmileawayCharacter::PlayMontageSection(UAnimMontage* Montage, const FName& SectionName) const

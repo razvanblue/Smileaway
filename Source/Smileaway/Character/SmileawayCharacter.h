@@ -9,6 +9,8 @@
 #include "Smileaway/Interfaces/HitInterface.h"
 #include "SmileawayCharacter.generated.h"
 
+class UHealthBarWidgetComponent;
+
 UCLASS()
 class SMILEAWAY_API ASmileawayCharacter : public ACharacter, public IHitInterface
 {
@@ -42,6 +44,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Character Stats")
 	TObjectPtr<class UCharacterStats> Stats;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Character Stats")
+	TObjectPtr<UHealthBarWidgetComponent> HealthBarWidget;
 	
 	UPROPERTY(EditAnywhere, Category = Montages)
 	TObjectPtr<UAnimMontage> AttackMontage;

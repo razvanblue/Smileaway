@@ -23,7 +23,7 @@ class SMILEAWAY_API APlayerCharacter : public ASmileawayCharacter
 
 public:
 	APlayerCharacter();
-	
+
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 protected:
@@ -35,6 +35,8 @@ protected:
 	void Move(const FInputActionValue& Value);
 
 	void Look(const FInputActionValue& Value);
+	
+	void HeavyAttack();
 	
 	void Interact();
 	
@@ -56,7 +58,13 @@ protected:
 	TObjectPtr<UInputAction> AttackInputAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> HeavyAttackInputAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> InteractInputAction;
+	
+	UPROPERTY(EditAnywhere, Category = Montages)
+	TObjectPtr<UAnimMontage> SpecialAttackMontage;
 	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UCameraComponent> FollowCamera;
@@ -72,6 +80,8 @@ private:
 	
 	bool CanMove();
 	
+	FTimerHandle CooldownTimer;
+	float SpecialCooldown  = 3.f;
 	int32 ComboCounter = 0;
 	int32 MaxCombo = 0;
 	
