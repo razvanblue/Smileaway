@@ -45,6 +45,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(LookInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(AttackInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
 		EnhancedInputComponent->BindAction(HeavyAttackInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::HeavyAttack);
+		EnhancedInputComponent->BindAction(DodgeInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Dodge);
 		EnhancedInputComponent->BindAction(InteractInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Interact);
 	}
 }

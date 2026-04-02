@@ -61,6 +61,9 @@ protected:
 	TObjectPtr<UInputAction> HeavyAttackInputAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> DodgeInputAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> InteractInputAction;
 	
 	UPROPERTY(EditAnywhere, Category = Montages)

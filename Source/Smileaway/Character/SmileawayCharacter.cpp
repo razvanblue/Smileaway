@@ -4,6 +4,7 @@
 #include "SmileawayCharacter.h"
 
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
@@ -100,6 +101,15 @@ void ASmileawayCharacter::Attack()
 
 void ASmileawayCharacter::AttackEnd()
 {
+}
+
+void ASmileawayCharacter::Dodge()
+{
+	if (DodgeMontage && (ActionState & EActionState::CanAttack) != EActionState::None)
+	{
+		ActionState = EActionState::Attacking;
+		PlayRandomMontageSection(DodgeMontage);
+	}
 }
 
 void ASmileawayCharacter::OnDeath()

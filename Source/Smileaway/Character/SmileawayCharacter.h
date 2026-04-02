@@ -31,6 +31,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
 	
+	UFUNCTION(BlueprintCallable)
+	virtual void Dodge();
+	
 	virtual void OnDeath();
 	
 	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName) const;
@@ -50,6 +53,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = Montages)
 	TObjectPtr<UAnimMontage> AttackMontage;
+	
+	UPROPERTY(EditAnywhere, Category = Montages)
+	TObjectPtr<UAnimMontage> DodgeMontage;
 	
 	UPROPERTY(EditAnywhere, Category = Montages)
 	TObjectPtr<UAnimMontage> HitReactMontage;
