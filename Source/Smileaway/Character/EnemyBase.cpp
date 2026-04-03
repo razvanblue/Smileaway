@@ -6,6 +6,24 @@
 #include "Components/CapsuleComponent.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
 
+void AEnemyBase::Attack(AActor* Target)
+{
+	// Actor must be valid
+	SetActorRotation((Target->GetActorLocation() - GetActorLocation()).Rotation());
+
+	Attack();
+}
+
+void AEnemyBase::Attack()
+{
+	bool bCanAttack = AttackMontage && (ActionState & EActionState::CanAttack) != EActionState::None;
+	if (bCanAttack)
+	{
+		//ActionState = EActionState::Attacking;
+		PlayMontageSection(AttackMontage, 0);
+	}
+}
+
 void AEnemyBase::OnDeath()
 {
 	Super::OnDeath();

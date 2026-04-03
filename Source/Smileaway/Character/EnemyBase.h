@@ -13,8 +13,13 @@ UCLASS()
 class SMILEAWAY_API AEnemyBase : public ASmileawayCharacter
 {
 	GENERATED_BODY()
+
+public:
+	void Attack(AActor* Target);
 	
 protected:
+	virtual void Attack() override;
+
 	virtual void OnDeath() override;
 };
 
