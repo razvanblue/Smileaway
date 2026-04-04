@@ -52,7 +52,7 @@ void AProjectileBase::OnOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	if (OtherActor == GetOwner())
+	if (IHitInterface::CanDamage(GetOwner(), OtherActor))
 	{
 		return;
 	}
@@ -124,8 +124,8 @@ void AProjectileBase::TriggerHitbox()
 	for (const FHitResult& Hit : Hits)
 	{
 		AActor* HitActor = Hit.GetActor();
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, TEXT("Hit something!"));
-		if (HitActor && HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
+		if (IHitInterface::CanDamage(GetOwner(), HitActor)
+			&& HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
 		{
 			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, AttackData.AttackMultiplier, GetOwner());
 		}

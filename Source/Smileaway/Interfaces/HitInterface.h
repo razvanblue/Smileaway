@@ -24,4 +24,6 @@ class SMILEAWAY_API IHitInterface
 public:
 	UFUNCTION(BlueprintNativeEvent)
 	void GetHit(const FVector& ImpactPoint, double DamageAmount, AActor* Hitter);
+
+	static bool CanDamage(AActor* Source, AActor* Target);
 };

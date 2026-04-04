@@ -58,8 +58,8 @@ void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 	for (const FHitResult& Hit : Hits)
 	{
 		AActor* HitActor = Hit.GetActor();
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, TEXT("Hit something!"));
-		if (HitActor && HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
+		if (IHitInterface::CanDamage(this, HitActor)
+			&& HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
 		{
 			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, AttackData.AttackMultiplier * Stats->GetAttack(), this);
 		}
@@ -93,6 +93,11 @@ void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, doub
 	{
 		OnDeath();
 	}
+}
+
+FGenericTeamId ASmileawayCharacter::GetGenericTeamId() const
+{
+	return FGenericTeamId(static_cast<uint8>(DamageFaction));
 }
 
 void ASmileawayCharacter::Attack()

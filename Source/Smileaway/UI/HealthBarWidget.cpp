@@ -3,3 +3,7 @@
 
 #include "HealthBarWidget.h"
 
+void UHealthBarWidget::SetHealthPercent(float Percent)
+{
+	HealthBar->SetPercent(Percent);
+}

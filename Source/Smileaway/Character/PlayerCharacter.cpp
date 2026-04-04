@@ -13,6 +13,8 @@ APlayerCharacter::APlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	DamageFaction = EDamageFaction::Player;
+
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;

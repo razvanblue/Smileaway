@@ -6,6 +6,11 @@
 #include "Components/CapsuleComponent.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
 
+AEnemyBase::AEnemyBase()
+{
+	DamageFaction = EDamageFaction::Enemy;
+}
+
 void AEnemyBase::Attack(AActor* Target)
 {
 	// Actor must be valid

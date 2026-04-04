@@ -19,3 +19,11 @@ enum class EActionState : uint8
 };
 
 ENUM_CLASS_FLAGS(EActionState)
+
+UENUM(BlueprintType)
+enum class EDamageFaction : uint8
+{
+	Neutral UMETA(DisplayName = "Neutral"),
+	Player UMETA(DisplayName = "Player"),
+	Enemy UMETA(DisplayName = "Enemy")
+};

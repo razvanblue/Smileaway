@@ -5,14 +5,16 @@
 #include "CoreMinimal.h"
 #include "CharacterTypes.h"
 #include "GameFramework/Character.h"
+#include "GenericTeamAgentInterface.h"
 #include "Smileaway/Animation/AnimationData.h"
 #include "Smileaway/Interfaces/HitInterface.h"
 #include "SmileawayCharacter.generated.h"
 
+class UCharacterStats;
 class UHealthBarWidgetComponent;
 
 UCLASS()
-class SMILEAWAY_API ASmileawayCharacter : public ACharacter, public IHitInterface
+class SMILEAWAY_API ASmileawayCharacter : public ACharacter, public IHitInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -20,12 +22,16 @@ public:
 	ASmileawayCharacter();
 	
 	void TriggerHitbox(FAttackData AttackData);
+
+	UCharacterStats* GetCharacterStats() const { return Stats; }
 	
 protected:
 	virtual void BeginPlay() override;
 	
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, double DamageAmount, AActor* Hitter) override;
 	
+	virtual FGenericTeamId GetGenericTeamId() const override;
+
 	virtual void Attack();
 	
 	UFUNCTION(BlueprintCallable)
@@ -45,8 +51,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Character Stats")
 	EActionState ActionState = EActionState::Unoccupied;
 	
-	UPROPERTY(EditAnywhere, Category = "Character Stats")
-	TObjectPtr<class UCharacterStats> Stats;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Stats")
+	TObjectPtr<UCharacterStats> Stats;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Stats")
+	EDamageFaction DamageFaction = EDamageFaction::Neutral;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Character Stats")
 	TObjectPtr<UHealthBarWidgetComponent> HealthBarWidget;

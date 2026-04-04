@@ -15,6 +15,8 @@ class SMILEAWAY_API AEnemyBase : public ASmileawayCharacter
 	GENERATED_BODY()
 
 public:
+	AEnemyBase();
+
 	void Attack(AActor* Target);
 	
 protected:

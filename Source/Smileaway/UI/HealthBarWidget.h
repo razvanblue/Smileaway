@@ -14,7 +14,11 @@ UCLASS()
 class SMILEAWAY_API UHealthBarWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
 public:
+
+	UFUNCTION(BlueprintCallable)
+	void SetHealthPercent(float Percent);
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UProgressBar> HealthBar;
