@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -127,6 +128,11 @@ void APlayerCharacter::AttackEnd()
 	ComboCounter = 0;
 	
 	Super::AttackEnd();
+}
+
+void APlayerCharacter::OnDeath()
+{
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
 void APlayerCharacter::AttackRecovery()

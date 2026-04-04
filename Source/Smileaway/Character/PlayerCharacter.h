@@ -41,6 +41,8 @@ protected:
 	void Interact();
 	
 	virtual void AttackEnd() override;
+
+	virtual void OnDeath() override;
 	
 	UFUNCTION(BlueprintCallable)
 	void AttackRecovery();

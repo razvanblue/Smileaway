@@ -62,6 +62,16 @@ void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 			&& HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
 		{
 			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, AttackData.AttackMultiplier * Stats->GetAttack(), this);
+			
+			if (DamageFaction == EDamageFaction::Player)
+			{
+				FVector Direction = (HitActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+
+				float Strength = 400.f;
+				FVector LaunchVelocity = Direction * Strength + FVector(0, 0, 100.f); // slight lift
+
+				Cast<ACharacter>(HitActor)->LaunchCharacter(LaunchVelocity, true, true);
+			}
 		}
 	}
 }
