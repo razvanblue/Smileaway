@@ -121,11 +121,17 @@ void ASmileawayCharacter::OnDeath()
 {
 	ActionState = EActionState::Dead;
 	
-	Controller->UnPossess();
-	
-	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+	if (Controller)
 	{
-		AnimInstance->StopAllMontages(0.f);
+		Controller->UnPossess();
+	}
+
+	if (GetMesh())
+	{
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->StopAllMontages(0.f);
+		}
 	}
 }
 
