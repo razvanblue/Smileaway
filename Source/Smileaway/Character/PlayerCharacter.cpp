@@ -130,6 +130,21 @@ void APlayerCharacter::AttackEnd()
 	Super::AttackEnd();
 }
 
+void APlayerCharacter::Dodge()
+{
+	if (DodgeMontage && (ActionState & EActionState::CanAttack) != EActionState::None)
+	{
+		StopAnimMontage(AttackMontage);
+		
+		ComboCounter = 0;
+		ActionState = EActionState::Attacking;
+		
+		PlayRandomMontageSection(DodgeMontage);
+	
+		Super::Dodge();
+	}
+}
+
 void APlayerCharacter::OnDeath()
 {
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);

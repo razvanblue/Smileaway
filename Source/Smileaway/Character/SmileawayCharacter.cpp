@@ -120,11 +120,6 @@ void ASmileawayCharacter::AttackEnd()
 
 void ASmileawayCharacter::Dodge()
 {
-	if (DodgeMontage && (ActionState & EActionState::CanAttack) != EActionState::None)
-	{
-		ActionState = EActionState::Attacking;
-		PlayRandomMontageSection(DodgeMontage);
-	}
 }
 
 void ASmileawayCharacter::OnDeath()

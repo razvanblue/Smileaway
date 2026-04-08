@@ -42,6 +42,8 @@ protected:
 	
 	virtual void AttackEnd() override;
 
+	virtual void Dodge() override;
+	
 	virtual void OnDeath() override;
 	
 	UFUNCTION(BlueprintCallable)
