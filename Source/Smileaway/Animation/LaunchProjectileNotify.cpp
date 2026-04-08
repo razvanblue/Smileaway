@@ -29,7 +29,7 @@ void ULaunchProjectileNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 			SocketTransform = MeshComp->GetComponentTransform();
 		}
 		
-		FVector SpawnLocation = SocketTransform.GetLocation() + SocketTransform.TransformVector(LocationOffset);
+		FVector SpawnLocation = SocketTransform.GetLocation() + Owner->GetActorTransform().TransformVector(LocationOffset);
 		FRotator SpawnRotation = Owner->GetActorRotation() + RotationOffset;
 		
 		FActorSpawnParameters SpawnParams;
