@@ -28,7 +28,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	virtual void GetHit_Implementation(const FVector& ImpactPoint, double DamageAmount, AActor* Hitter) override;
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter) override;
 	
 	virtual FGenericTeamId GetGenericTeamId() const override;
 

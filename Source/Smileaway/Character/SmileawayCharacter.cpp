@@ -61,17 +61,21 @@ void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 		if (IHitInterface::CanDamage(this, HitActor)
 			&& HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
 		{
-			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, AttackData.AttackMultiplier * Stats->GetAttack(), this);
+			FHitData HitData {.Damage = AttackData.AttackMultiplier * Stats->GetAttack()};
 			
-			if (DamageFaction == EDamageFaction::Player)
+			if (AttackData.PushbackForce > 0.f)
 			{
 				FVector Direction = (HitActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+				Direction.Z = 0.f;
 
-				float Strength = 400.f;
-				FVector LaunchVelocity = Direction * Strength + FVector(0, 0, 100.f); // slight lift
-
-				Cast<ACharacter>(HitActor)->LaunchCharacter(LaunchVelocity, true, true);
+				HitData.LaunchVelocity = Direction * AttackData.PushbackForce;
 			}
+			if (AttackData.LiftUpForce > 0.f)
+			{
+				HitData.LaunchVelocity.Z = AttackData.LiftUpForce;
+			}
+			
+			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, HitData, this);
 		}
 	}
 }
@@ -85,7 +89,7 @@ void ASmileawayCharacter::BeginPlay()
 	Stats->OnHealthChanged.AddDynamic(HealthBarWidget, &UHealthBarWidgetComponent::SetHealthPercent);
 }
 
-void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, double DamageAmount, AActor* Hitter)
+void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter)
 {
 	if (ActionState == EActionState::Dead) return;
 	
@@ -98,7 +102,13 @@ void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, doub
 		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
 	}
 	
-	Stats->TakeDamage(DamageAmount);
+	if (HitData.LaunchVelocity != FVector::ZeroVector)
+	{
+		GetController()->StopMovement();
+		LaunchCharacter(HitData.LaunchVelocity, true, true);
+	}
+	
+	Stats->TakeDamage(HitData.Damage);
 	if (!Stats->IsAlive())
 	{
 		OnDeath();

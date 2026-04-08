@@ -6,6 +6,18 @@
 #include "UObject/Interface.h"
 #include "HitInterface.generated.h"
 
+USTRUCT(BlueprintType)
+struct FHitData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	double Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector LaunchVelocity;
+};
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UHitInterface : public UInterface
@@ -23,7 +35,7 @@ class SMILEAWAY_API IHitInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	void GetHit(const FVector& ImpactPoint, double DamageAmount, AActor* Hitter);
+	void GetHit(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter);
 
 	static bool CanDamage(AActor* Source, AActor* Target);
 };

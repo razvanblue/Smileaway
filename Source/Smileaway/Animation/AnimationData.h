@@ -12,6 +12,12 @@ struct FAttackData
 	float AttackMultiplier = 1.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PushbackForce = 0.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LiftUpForce = 0.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RangeMin = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

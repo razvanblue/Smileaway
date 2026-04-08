@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Smileaway/Interfaces/HitInterface.h"
 
@@ -127,7 +128,21 @@ void AProjectileBase::TriggerHitbox()
 		if (IHitInterface::CanDamage(GetOwner(), HitActor)
 			&& HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
 		{
-			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, AttackData.AttackMultiplier, GetOwner());
+			FHitData HitData {.Damage = AttackData.AttackMultiplier};
+			
+			if (AttackData.PushbackForce > 0.f)
+			{
+				FVector Direction = (HitActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+				Direction.Z = 0.f;
+
+				HitData.LaunchVelocity = Direction * AttackData.PushbackForce;
+			}
+			if (AttackData.LiftUpForce > 0.f)
+			{
+				HitData.LaunchVelocity.Z = AttackData.LiftUpForce;
+			}
+			
+			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, HitData, this);
 		}
 	}
 }
