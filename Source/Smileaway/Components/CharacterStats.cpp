@@ -3,20 +3,19 @@
 
 #include "Smileaway/Components/CharacterStats.h"
 
-// Sets default values for this component's properties
+
 UCharacterStats::UCharacterStats()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
-
 
 void UCharacterStats::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	BaseStats = StatsConfig.Pack();
+	FinalStats = BaseStats;
+	Health = FinalStats[EStats::MaxHP];
 }
 
 
@@ -28,27 +27,33 @@ void UCharacterStats::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 void UCharacterStats::TakeDamage(float DamageAmount)
 {
-	if (CurrentHealth > 0.f && DamageAmount > 0.f)
+	if (Health > 0.f && DamageAmount > 0.f)
 	{
-		CurrentHealth = FMath::Max(0.f, CurrentHealth - DamageAmount);
+		Health = FMath::Max(0.f, Health - DamageAmount);
 		OnHealthChanged.Broadcast(GetHealthPercentage());
 	}
+}
+
+void UCharacterStats::AddModifier(const FStatModifier& Modifier)
+{
+	StatModifiers.Add(Modifier);
 }
 
 
 float UCharacterStats::GetHealthPercentage()
 {
-	return CurrentHealth / MaxHealth;
+	return Health / FinalStats[EStats::MaxHP];
 }
+
 
 double UCharacterStats::GetAttack()
 {
-	return Attack;
+	return FinalStats[EStats::Attack];
 }
 
 
 bool UCharacterStats::IsAlive()
 {
-	return CurrentHealth > 0.f;
+	return Health > 0.f;
 }
 
