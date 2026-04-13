@@ -16,11 +16,12 @@ enum class EStats : uint8
 	
 	MAX UMETA(Hidden)
 };
+constexpr uint8 StatCount = static_cast<uint8>(EStats::MAX);
 
 template<typename T>
 struct TStatArray
 {
-	std::array<T, static_cast<uint8>(EStats::MAX)> Data;
+	std::array<T, StatCount> Data;
 	
 	FORCEINLINE T& operator[](EStats Stat)
 	{
@@ -62,7 +63,7 @@ struct FStats
 		return {MaxHP, Attack, Speed};
 	}
 };
-static_assert(sizeof(FStats) == sizeof(float) * static_cast<uint8>(EStats::MAX), "FStats should be same size as EStats enum");
+static_assert(sizeof(FStats) == sizeof(float) * StatCount, "FStats should be same size as EStats enum");
 
 UENUM(BlueprintType)
 enum class EModifierType : uint8
@@ -97,7 +98,7 @@ public:
 	
 	void TakeDamage(float DamageAmount);
 	
-	void AddModifier(const FStatModifier& Modifier);
+	void AddModifier(const FStatModifier& Modifier, bool RecalculateStats = true);
 	
 	float GetHealthPercentage();
 	
@@ -112,6 +113,8 @@ protected:
 	virtual void BeginPlay() override;
 		
 private:
+	
+	void CalculateFinalStats();
 	
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	FStats StatsConfig;

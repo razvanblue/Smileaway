@@ -34,9 +34,40 @@ void UCharacterStats::TakeDamage(float DamageAmount)
 	}
 }
 
-void UCharacterStats::AddModifier(const FStatModifier& Modifier)
+
+void UCharacterStats::AddModifier(const FStatModifier& Modifier, bool RecalculateStats)
 {
 	StatModifiers.Add(Modifier);
+	
+	if (RecalculateStats)
+	{
+		CalculateFinalStats();
+	}
+}
+
+
+void UCharacterStats::CalculateFinalStats()
+{
+	std::array<float, StatCount> AdditiveModifiers;
+	std::array<float, StatCount> MultiplicativeModifiers;
+	AdditiveModifiers.fill(0.f);
+	MultiplicativeModifiers.fill(1.f);
+	
+	for (const auto& Modifier : StatModifiers)
+	{
+		if (Modifier.Type == EModifierType::Additive)
+		{
+			AdditiveModifiers[static_cast<uint8>(Modifier.Stat)] += Modifier.Value;
+		}
+		else
+		{
+			MultiplicativeModifiers[static_cast<uint8>(Modifier.Stat)] += Modifier.Value;
+		}
+	}
+	for (uint8 i = 0; i < StatCount; ++i)
+	{
+		FinalStats[i] = (BaseStats[i] + AdditiveModifiers[i]) * MultiplicativeModifiers[i];
+	}
 }
 
 
