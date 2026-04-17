@@ -1,87 +1,21 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include <array>
+#include "Smileaway/DataAssets/CharacterStat.h"
+#include "Smileaway/DataAssets/StatusEffect.h"
 #include "CharacterStats.generated.h"
 
-UENUM(BlueprintType)
-enum class EStats : uint8
-{
-	MaxHP UMETA(DisplayName = "Max HP"),
-	Attack UMETA(DisplayName = "Attack"),
-	Speed UMETA(DisplayName = "Speed"),
-	
-	MAX UMETA(Hidden)
-};
-constexpr uint8 StatCount = static_cast<uint8>(EStats::MAX);
-
-template<typename T>
-struct TStatArray
-{
-	std::array<T, StatCount> Data;
-	
-	FORCEINLINE T& operator[](EStats Stat)
-	{
-		return Data[static_cast<uint8>(Stat)];
-	}
-	
-	FORCEINLINE const T& operator[](EStats Stat) const
-	{
-		return Data[static_cast<uint8>(Stat)];
-	}
-	
-	FORCEINLINE T& operator[](uint8 Index)
-	{
-		return Data[Index];
-	}
-	
-	FORCEINLINE const T& operator[](uint8 Index) const
-	{
-		return Data[Index];
-	}
-};
-
-USTRUCT(BlueprintType)
-struct FStats
+USTRUCT()
+struct FActiveStatusEffect
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHP = 100.f;
+	UPROPERTY()
+	const UStatusEffect* Data;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Attack = 10.f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Speed  = 1.f;
-	
-	FORCEINLINE TStatArray<float> Pack() const
-	{
-		return {MaxHP, Attack, Speed};
-	}
-};
-static_assert(sizeof(FStats) == sizeof(float) * StatCount, "FStats should be same size as EStats enum");
-
-UENUM(BlueprintType)
-enum class EModifierType : uint8
-{
-	Additive UMETA(DisplayName = "Additive"),
-	Multiplicative UMETA(DisplayName = "Multiplicative")
-};
-
-USTRUCT(BlueprintType)
-struct FStatModifier
-{
-	GENERATED_BODY()
-
-	EStats Stat;
-	EModifierType Type;
-	float Value;
-
-	float Duration = -1.f; // -1 = permanent
+	UPROPERTY(VisibleAnywhere)
+	float RemainingTime;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float, HealthPercent);
@@ -96,9 +30,10 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-	void TakeDamage(float DamageAmount);
+	UFUNCTION(BlueprintCallable)
+	void AddStatusEffect(const UStatusEffect* Effect);
 	
-	void AddModifier(const FStatModifier& Modifier, bool RecalculateStats = true);
+	void TakeDamage(float DamageAmount);
 	
 	float GetHealthPercentage();
 	
@@ -116,6 +51,8 @@ private:
 	
 	void CalculateFinalStats();
 	
+	void TickBuffs(float DeltaTime);
+	
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	FStats StatsConfig;
 
@@ -123,7 +60,7 @@ private:
 	double Health = 100.f;
 	
 	UPROPERTY(EditAnywhere, Category = "Stats")
-	TArray<FStatModifier> StatModifiers;
+	TArray<FActiveStatusEffect> ActiveEffects;
 	
 	// Internal static data structure used for fast calculations of base stats
 	TStatArray<float> BaseStats;

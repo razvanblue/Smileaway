@@ -7,6 +7,7 @@
 UCharacterStats::UCharacterStats()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.TickInterval = 0.2f;
 }
 
 void UCharacterStats::BeginPlay()
@@ -22,6 +23,8 @@ void UCharacterStats::BeginPlay()
 void UCharacterStats::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	TickBuffs(DeltaTime);
 }
 
 
@@ -35,14 +38,13 @@ void UCharacterStats::TakeDamage(float DamageAmount)
 }
 
 
-void UCharacterStats::AddModifier(const FStatModifier& Modifier, bool RecalculateStats)
+void UCharacterStats::AddStatusEffect(const UStatusEffect* Effect)
 {
-	StatModifiers.Add(Modifier);
+	if (Effect == nullptr) return;
 	
-	if (RecalculateStats)
-	{
-		CalculateFinalStats();
-	}
+	ActiveEffects.Add({Effect, Effect->Duration});
+	
+	CalculateFinalStats();
 }
 
 
@@ -53,20 +55,54 @@ void UCharacterStats::CalculateFinalStats()
 	AdditiveModifiers.fill(0.f);
 	MultiplicativeModifiers.fill(1.f);
 	
-	for (const auto& Modifier : StatModifiers)
+	for (const auto& Effect : ActiveEffects)
 	{
-		if (Modifier.Type == EModifierType::Additive)
+		for (const auto& Modifier : Effect.Data->Modifiers)
 		{
-			AdditiveModifiers[static_cast<uint8>(Modifier.Stat)] += Modifier.Value;
-		}
-		else
-		{
-			MultiplicativeModifiers[static_cast<uint8>(Modifier.Stat)] += Modifier.Value;
+			if (Modifier.Type == EModifierType::Additive)
+			{
+				AdditiveModifiers[static_cast<uint8>(Modifier.Stat)] += Modifier.Value;
+			}
+			else
+			{
+				MultiplicativeModifiers[static_cast<uint8>(Modifier.Stat)] += Modifier.Value;
+			}
 		}
 	}
 	for (uint8 i = 0; i < StatCount; ++i)
 	{
 		FinalStats[i] = (BaseStats[i] + AdditiveModifiers[i]) * MultiplicativeModifiers[i];
+	}
+	
+	if (Health > FinalStats[EStats::MaxHP])
+	{
+		Health = FinalStats[EStats::MaxHP];
+		OnHealthChanged.Broadcast(GetHealthPercentage());
+	}
+}
+
+void UCharacterStats::TickBuffs(float DeltaTime)
+{
+	bool bShouldUpdateStats = false;
+	for (int32 i = ActiveEffects.Num() - 1; i >= 0; --i)
+	{
+		auto& Effect = ActiveEffects[i];
+
+		if (Effect.Data->Duration != INFINITE_STATUS_DURATION)
+		{
+			Effect.RemainingTime -= DeltaTime;
+
+			if (Effect.RemainingTime <= 0.f)
+			{
+				ActiveEffects.RemoveAtSwap(i);
+				bShouldUpdateStats = true;
+			}
+		}
+	}
+	
+	if (bShouldUpdateStats)
+	{
+		CalculateFinalStats();
 	}
 }
 
