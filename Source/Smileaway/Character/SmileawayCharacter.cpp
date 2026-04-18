@@ -9,12 +9,14 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
 #include "Smileaway/Components/CharacterStats.h"
+#include "Smileaway/Components/LevelingComponent.h"
 
 // Sets default values
 ASmileawayCharacter::ASmileawayCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	LevelingComponent = CreateDefaultSubobject<ULevelingComponent>(TEXT("Leveling Component"));
 	Stats = CreateDefaultSubobject<UCharacterStats>(TEXT("Character Stats"));
 	
 	HealthBarWidget = CreateDefaultSubobject<UHealthBarWidgetComponent>(TEXT("Health Bar Component"));
@@ -78,6 +80,11 @@ void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 			IHitInterface::Execute_GetHit(HitActor, Hit.ImpactPoint, HitData, this);
 		}
 	}
+}
+
+void ASmileawayCharacter::GainExperience(int32 Experience)
+{
+	LevelingComponent->GainExperience(Experience);
 }
 
 // Called when the game starts or when spawned

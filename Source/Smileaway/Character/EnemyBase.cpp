@@ -4,6 +4,8 @@
 #include "EnemyBase.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Smileaway/Components/LevelingComponent.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
 
 AEnemyBase::AEnemyBase()
@@ -32,6 +34,11 @@ void AEnemyBase::Attack()
 void AEnemyBase::OnDeath()
 {
 	Super::OnDeath();
+	
+	if (auto* Player = Cast<ASmileawayCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		Player->GainExperience(LevelingComponent->GetXPToNextLevel());
+	}
 	
 	HealthBarWidget->SetVisibility(false);
 	

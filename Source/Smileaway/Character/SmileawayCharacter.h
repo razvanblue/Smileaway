@@ -12,6 +12,7 @@
 
 class UCharacterStats;
 class UHealthBarWidgetComponent;
+class ULevelingComponent;
 
 UCLASS()
 class SMILEAWAY_API ASmileawayCharacter : public ACharacter, public IHitInterface, public IGenericTeamAgentInterface
@@ -22,6 +23,8 @@ public:
 	ASmileawayCharacter();
 	
 	void TriggerHitbox(FAttackData AttackData);
+	
+	void GainExperience(int32 Experience);
 
 	UCharacterStats* GetCharacterStats() const { return Stats; }
 	
@@ -54,6 +57,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Stats")
 	TObjectPtr<UCharacterStats> Stats;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Stats")
+	TObjectPtr<ULevelingComponent> LevelingComponent;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Stats")
 	EDamageFaction DamageFaction = EDamageFaction::Neutral;
 	
