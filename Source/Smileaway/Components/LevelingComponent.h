@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "LevelingComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FExperienceChangedDelegate, int32, Amount, int32, ToNextLevel);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FLevelUpDelegate, int32, NewLevel);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -24,7 +25,13 @@ public:
 	int32 GetLevel() const { return Level; }
 	
 	UFUNCTION(BlueprintCallable)
+	int32 GetCurrentXP() const { return CurrentXP; }
+	
+	UFUNCTION(BlueprintCallable)
 	int32 GetXPToNextLevel() const { return XPToNextLevel; }
+	
+	UPROPERTY(BlueprintAssignable, Category="Level")
+	FExperienceChangedDelegate OnExperienceChanged;
 	
 	UPROPERTY(BlueprintAssignable, Category="Level")
 	FLevelUpDelegate OnLevelUp;

@@ -11,10 +11,10 @@ void UHealthBarWidgetComponent::InitWidget()
 	HealthBarWidget = Cast<UHealthBarWidget>(GetUserWidgetObject());
 }
 
-void UHealthBarWidgetComponent::SetHealthPercent(float Percent)
+void UHealthBarWidgetComponent::SetHealth(float NewHealth, float MaxHealth)
 {
 	if (HealthBarWidget)
 	{
-		HealthBarWidget->HealthBar->SetPercent(Percent);
+		HealthBarWidget->HealthBar->SetPercent(NewHealth / MaxHealth);
 	}
 }

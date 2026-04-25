@@ -18,7 +18,7 @@ struct FActiveStatusEffect
 	float RemainingTime;
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float, HealthPercent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature, float, NewHealth, float, MaxHealth);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SMILEAWAY_API UCharacterStats : public UActorComponent
@@ -35,9 +35,15 @@ public:
 	
 	void TakeDamage(float DamageAmount);
 	
+	float GetAttack();
+	
+	float GetHealth();
+	
 	float GetHealthPercentage();
 	
-	double GetAttack();
+	float GetStat(EStats Stat);
+	
+	float GetBaseStat(EStats Stat);
 
 	bool IsAlive();
 

@@ -28,6 +28,8 @@ public:
 
 	UCharacterStats* GetCharacterStats() const { return Stats; }
 	
+	ULevelingComponent* GetLevelingComponent() const { return LevelingComponent; }
+	
 protected:
 	virtual void BeginPlay() override;
 	

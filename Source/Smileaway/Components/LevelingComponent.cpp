@@ -45,5 +45,7 @@ void ULevelingComponent::GainExperience(int32 Amount)
 	{
 		LevelUp();
 	}
+	
+	OnExperienceChanged.Broadcast(CurrentXP, XPToNextLevel);
 }
 

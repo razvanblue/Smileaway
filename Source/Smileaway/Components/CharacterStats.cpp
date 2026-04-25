@@ -33,7 +33,7 @@ void UCharacterStats::TakeDamage(float DamageAmount)
 	if (Health > 0.f && DamageAmount > 0.f)
 	{
 		Health = FMath::Max(0.f, Health - DamageAmount);
-		OnHealthChanged.Broadcast(GetHealthPercentage());
+		OnHealthChanged.Broadcast(Health, FinalStats[EStats::MaxHP]);
 	}
 }
 
@@ -77,9 +77,10 @@ void UCharacterStats::CalculateFinalStats()
 	if (Health > FinalStats[EStats::MaxHP])
 	{
 		Health = FinalStats[EStats::MaxHP];
-		OnHealthChanged.Broadcast(GetHealthPercentage());
+		OnHealthChanged.Broadcast(Health, FinalStats[EStats::MaxHP]);
 	}
 }
+
 
 void UCharacterStats::TickBuffs(float DeltaTime)
 {
@@ -107,15 +108,31 @@ void UCharacterStats::TickBuffs(float DeltaTime)
 }
 
 
+float UCharacterStats::GetAttack()
+{
+	return FinalStats[EStats::Attack];
+}
+
+float UCharacterStats::GetHealth()
+{
+	return Health;
+}
+
+
 float UCharacterStats::GetHealthPercentage()
 {
 	return Health / FinalStats[EStats::MaxHP];
 }
 
 
-double UCharacterStats::GetAttack()
+float UCharacterStats::GetStat(EStats Stat)
 {
-	return FinalStats[EStats::Attack];
+	return FinalStats[Stat];
+}
+
+float UCharacterStats::GetBaseStat(EStats Stat)
+{
+	return BaseStats[Stat];
 }
 
 

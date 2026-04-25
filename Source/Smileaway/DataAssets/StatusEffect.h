@@ -23,4 +23,10 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FStatModifier> Modifiers;
+	
+	UPROPERTY(EditAnywhere, Category = "Display")
+	TObjectPtr<UTexture2D> Icon;
+	
+	UPROPERTY(EditAnywhere, Category = "Display")
+	FLinearColor IconTint = FLinearColor::Blue;
 };

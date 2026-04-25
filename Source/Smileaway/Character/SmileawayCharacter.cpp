@@ -92,8 +92,8 @@ void ASmileawayCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	HealthBarWidget->SetHealthPercent(Stats->GetHealthPercentage());
-	Stats->OnHealthChanged.AddDynamic(HealthBarWidget, &UHealthBarWidgetComponent::SetHealthPercent);
+	HealthBarWidget->SetHealth(Stats->GetHealth(), Stats->GetStat(EStats::MaxHP));
+	Stats->OnHealthChanged.AddDynamic(HealthBarWidget, &UHealthBarWidgetComponent::SetHealth);
 }
 
 void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter)

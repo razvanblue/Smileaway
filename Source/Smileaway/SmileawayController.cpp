@@ -4,6 +4,7 @@
 #include "SmileawayController.h"
 #include "Character/SmileawayCharacter.h"
 #include "Components/CharacterStats.h"
+#include "Components/LevelingComponent.h"
 
 void ASmileawayController::OnPossess(APawn* InPawn)
 {
@@ -14,14 +15,21 @@ void ASmileawayController::OnPossess(APawn* InPawn)
 
 void ASmileawayController::InitializeUI(APawn* InPawn)
 {
-	if (!HealthWidget)
+	if (!PlayerHUD)
 	{
 		return;
 	}
 	
 	if (auto* PC = Cast<ASmileawayCharacter>(InPawn))
 	{
-		PC->GetCharacterStats()->OnHealthChanged.AddDynamic(HealthWidget, &UHealthBarWidget::SetHealthPercent);
-		HealthWidget->SetHealthPercent(PC->GetCharacterStats()->GetHealthPercentage());
+		auto CharacterStats = PC->GetCharacterStats();
+		CharacterStats->OnHealthChanged.AddDynamic(PlayerHUD, &UPlayerHUD::SetHealth);
+		PlayerHUD->SetHealth(CharacterStats->GetHealth(), CharacterStats->GetStat(EStats::MaxHP));
+		
+		auto LevelingComponent = PC->GetLevelingComponent();
+		LevelingComponent->OnExperienceChanged.AddDynamic(PlayerHUD, &UPlayerHUD::SetExperience);
+		LevelingComponent->OnLevelUp.AddDynamic(PlayerHUD, &UPlayerHUD::SetLevel);
+		PlayerHUD->SetExperience(LevelingComponent->GetCurrentXP(), LevelingComponent->GetXPToNextLevel());
+		PlayerHUD->SetLevel(LevelingComponent->GetLevel());
 	}
 }

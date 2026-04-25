@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "UI/HealthBarWidget.h"
+#include "UI/PlayerHUD.h"
 #include "SmileawayController.generated.h"
 
 /**
@@ -22,7 +22,7 @@ public:
 protected:
 
     UPROPERTY(BlueprintReadWrite)
-    TObjectPtr<UHealthBarWidget> HealthWidget;
+    TObjectPtr<UPlayerHUD> PlayerHUD;
 
 	UFUNCTION(BlueprintCallable)
     void InitializeUI(APawn* InPawn);

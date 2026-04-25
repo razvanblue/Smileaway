@@ -19,7 +19,7 @@ public:
 	virtual void InitWidget() override;
 	
 	UFUNCTION(BlueprintCallable)
-	void SetHealthPercent(float Percent);
+	void SetHealth(float NewHealth, float MaxHealth);
 
 private:
 	UPROPERTY(Transient)
