@@ -45,6 +45,8 @@ void UCharacterStats::AddStatusEffect(const UStatusEffect* Effect)
 	ActiveEffects.Add({Effect, Effect->Duration});
 	
 	CalculateFinalStats();
+	
+	OnStatusEffectApplied.Broadcast(Effect, Effect->Duration);
 }
 
 
@@ -95,6 +97,7 @@ void UCharacterStats::TickBuffs(float DeltaTime)
 
 			if (Effect.RemainingTime <= 0.f)
 			{
+				OnStatusEffectRemoved.Broadcast(Effect.Data);
 				ActiveEffects.RemoveAtSwap(i);
 				bShouldUpdateStats = true;
 			}

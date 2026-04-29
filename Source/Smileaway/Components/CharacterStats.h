@@ -15,10 +15,12 @@ struct FActiveStatusEffect
 	const UStatusEffect* Data;
 
 	UPROPERTY(VisibleAnywhere)
-	float RemainingTime;
+	float RemainingTime = 0.f;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature, float, NewHealth, float, MaxHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStatusEffectAppliedSignature, const UStatusEffect*, Effect, float, Duration);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStatusEffectRemovedSignature, const UStatusEffect*, Effect);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SMILEAWAY_API UCharacterStats : public UActorComponent
@@ -49,6 +51,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnHealthChangedSignature OnHealthChanged;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnStatusEffectAppliedSignature OnStatusEffectApplied;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnStatusEffectRemovedSignature OnStatusEffectRemoved;
 	
 protected:
 	virtual void BeginPlay() override;

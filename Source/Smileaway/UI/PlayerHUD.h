@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUD.generated.h"
 
+class UWrapBox;
+class UStatusEffect;
+class UStatusEffectIcon;
 class UProgressBar;
 class UTextBlock;
 
@@ -36,6 +39,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "HUD|Experience")
 	void SetExperience(int32 CurrentXP, int32 XPToNextLevel);
 	
+	UFUNCTION(BlueprintCallable, Category = "HUD|Status Effects")
+	void AddStatusEffect(const UStatusEffect* Effect, float Duration);
+	
+	UFUNCTION(BlueprintCallable, Category = "HUD|Status Effects")
+	void RemoveStatusEffect(const UStatusEffect* Effect);
+	
 protected:
 
 	/* ---------------- Health Widgets ---------------- */
@@ -62,5 +71,15 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> RequiredExperienceText;
+	
+	/* ---------------- Container Widgets ---------------- */
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UWrapBox> StatusEffectsContainer;
 
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Status Effects")
+	TSubclassOf<UStatusEffectIcon> StatusEffectIconClass;
+	
+	UPROPERTY()
+	TMap<const UStatusEffect*, TObjectPtr<UStatusEffectIcon>> ActiveStatusEffects;
 };

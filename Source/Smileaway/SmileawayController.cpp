@@ -25,6 +25,8 @@ void ASmileawayController::InitializeUI(APawn* InPawn)
 		auto CharacterStats = PC->GetCharacterStats();
 		CharacterStats->OnHealthChanged.AddDynamic(PlayerHUD, &UPlayerHUD::SetHealth);
 		PlayerHUD->SetHealth(CharacterStats->GetHealth(), CharacterStats->GetStat(EStats::MaxHP));
+		CharacterStats->OnStatusEffectApplied.AddDynamic(PlayerHUD, &UPlayerHUD::AddStatusEffect);
+		CharacterStats->OnStatusEffectRemoved.AddDynamic(PlayerHUD, &UPlayerHUD::RemoveStatusEffect);
 		
 		auto LevelingComponent = PC->GetLevelingComponent();
 		LevelingComponent->OnExperienceChanged.AddDynamic(PlayerHUD, &UPlayerHUD::SetExperience);
