@@ -36,6 +36,13 @@ void UPlayerHUD::SetExperience(int32 CurrentXP, int32 XPToNextLevel)
 	RequiredExperienceText->SetText(FText::AsNumber(XPToNextLevel));
 }
 
+void UPlayerHUD::SetRemainingEnemies(int32 NewRemainingEnemies)
+{
+	if (!RemainingEnemiesText) return;
+	
+	RemainingEnemiesText->SetText(FText::AsNumber(NewRemainingEnemies));
+}
+
 void UPlayerHUD::AddStatusEffect(const UStatusEffect* Effect, float Duration)
 {
 	if (!IsValid(Effect) || !StatusEffectsContainer || !StatusEffectIconClass)

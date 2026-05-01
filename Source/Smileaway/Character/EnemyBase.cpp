@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Smileaway/Components/LevelingComponent.h"
+#include "Smileaway/GameFramework/SmileawayGameMode.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
 
 AEnemyBase::AEnemyBase()
@@ -38,6 +39,11 @@ void AEnemyBase::OnDeath()
 	if (auto* Player = Cast<ASmileawayCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
 	{
 		Player->GainExperience(LevelingComponent->GetXPToNextLevel());
+	}
+	
+	if (const auto GameMode = Cast<ASmileawayGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		GameMode->OnEnemyDeath();
 	}
 	
 	HealthBarWidget->SetVisibility(false);

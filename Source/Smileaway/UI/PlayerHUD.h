@@ -39,6 +39,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "HUD|Experience")
 	void SetExperience(int32 CurrentXP, int32 XPToNextLevel);
 	
+	/* ---------------- Game State ---------------- */
+	
+	UFUNCTION(BlueprintCallable, Category = "HUD|Game State")
+	void SetRemainingEnemies(int32 NewRemainingEnemies);
+	
+	/* ---------------- Status Effects ---------------- */
+	
 	UFUNCTION(BlueprintCallable, Category = "HUD|Status Effects")
 	void AddStatusEffect(const UStatusEffect* Effect, float Duration);
 	
@@ -71,6 +78,11 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> RequiredExperienceText;
+	
+	/* ---------------- Experience Widgets ---------------- */
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> RemainingEnemiesText;
 	
 	/* ---------------- Container Widgets ---------------- */
 	

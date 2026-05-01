@@ -7,7 +7,7 @@
 constexpr float INFINITE_STATUS_DURATION = -1.f;
 
 UCLASS(BlueprintType)
-class UStatusEffect : public UDataAsset
+class SMILEAWAY_API UStatusEffect : public UDataAsset
 {
 	GENERATED_BODY()
 

@@ -3,8 +3,10 @@
 
 #include "SmileawayController.h"
 #include "Character/SmileawayCharacter.h"
+#include "Combat/WaveSpawner.h"
 #include "Components/CharacterStats.h"
 #include "Components/LevelingComponent.h"
+#include "GameFramework/SmileawayGameMode.h"
 
 void ASmileawayController::OnPossess(APawn* InPawn)
 {
@@ -33,5 +35,10 @@ void ASmileawayController::InitializeUI(APawn* InPawn)
 		LevelingComponent->OnLevelUp.AddDynamic(PlayerHUD, &UPlayerHUD::SetLevel);
 		PlayerHUD->SetExperience(LevelingComponent->GetCurrentXP(), LevelingComponent->GetXPToNextLevel());
 		PlayerHUD->SetLevel(LevelingComponent->GetLevel());
+		
+		if (const auto GameMode = Cast<ASmileawayGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameMode->OnRemainingEnemiesChanged.AddDynamic(PlayerHUD, &UPlayerHUD::SetRemainingEnemies);
+		}
 	}
 }
