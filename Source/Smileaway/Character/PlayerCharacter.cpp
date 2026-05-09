@@ -153,8 +153,11 @@ void APlayerCharacter::HeavyAttack()
 template <int32 Index>
 void APlayerCharacter::UseSkill()
 {
-	bool bCanAttack = (ActionState & EActionState::CanAttack) != EActionState::None;
-	if (bCanAttack && SkillSlots.IsValidIndex(Index) == false) return;
+	bool bCanAttack =
+		(ActionState & EActionState::CanAttack) != EActionState::None
+		&& SkillSlots.IsValidIndex(Index)
+		&& SkillSlots[Index]->CanActivate();
+	if (bCanAttack == false) return;
 	
 	if (USkillBase* Skill = SkillSlots[Index])
 	{
