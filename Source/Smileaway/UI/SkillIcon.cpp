@@ -15,6 +15,8 @@ USkillIcon::USkillIcon(const FObjectInitializer& ObjectInitializer)
 void USkillIcon::NativeConstruct()
 {
 	Super::NativeConstruct();
+	
+	SkillIcon->SetVisibility(ESlateVisibility::Hidden);
 
 	if (SkillIcon == nullptr)
 	{
@@ -33,7 +35,7 @@ void USkillIcon::EnterCooldown(float InCooldownDuration)
 
 void USkillIcon::ResetCooldown()
 {
-	CooldownDuration = 0.f;
+	UpdateRemainingTime(0.f);
 }
 
 void USkillIcon::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -51,9 +53,9 @@ void USkillIcon::SetSkill(const USkillData* Skill, float InCooldownDuration)
 	SkillData = Skill;
 	EnterCooldown(InCooldownDuration);
 	
-	if (OverlayMaterialInstance)
+	if (OverlayMaterialInstance && SkillData && SkillData->Icon)
 	{
-		OverlayMaterialInstance->SetTextureParameterValue(TEXT("Icon"), (SkillData && SkillData->Icon) ? SkillData->Icon : nullptr);
+		OverlayMaterialInstance->SetTextureParameterValue(TEXT("Icon"), SkillData->Icon);
 	}
 	
 	UpdateRemainingTime(CooldownDuration); // Resets skill cooldown
