@@ -9,6 +9,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Smileaway/Combat/SkillBase.h"
+#include "Smileaway/DataAssets/SkillData.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -36,6 +38,8 @@ APlayerCharacter::APlayerCharacter()
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom);
+	
+	SkillSlots.SetNum(3);
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -50,7 +54,36 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(HeavyAttackInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::HeavyAttack);
 		EnhancedInputComponent->BindAction(DodgeInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Dodge);
 		EnhancedInputComponent->BindAction(InteractInputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Interact);
+		EnhancedInputComponent->BindAction(Skill1InputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::UseSkill<0>);
+		EnhancedInputComponent->BindAction(Skill2InputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::UseSkill<1>);
+		EnhancedInputComponent->BindAction(Skill3InputAction, ETriggerEvent::Triggered, this, &APlayerCharacter::UseSkill<2>);
 	}
+}
+
+void APlayerCharacter::EquipSkill(int32 SlotIndex, USkillData* const SkillData)
+{
+	if (SkillSlots.IsValidIndex(SlotIndex) == false)
+	{
+		return;
+	}
+	
+	auto& Skill = SkillSlots[SlotIndex];
+	if (Skill)
+	{
+		Skill->Cleanup();
+	}
+	if (SkillData)
+	{
+		Skill = NewObject<USkillBase>(this, SkillData->SkillClass ? SkillData->SkillClass.Get() : USkillBase::StaticClass());
+		Skill->Cooldown = SkillData->Cooldown;
+		Skill->SkillMontage = SkillData->SkillMontage;
+	}
+	else
+	{
+		Skill = nullptr;
+	}
+	
+	OnSkillEquipped.Broadcast(SlotIndex, Skill, SkillData);
 }
 
 void APlayerCharacter::BeginPlay()
@@ -92,16 +125,15 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 void APlayerCharacter::Attack()
 {
 	bool bCanAttack = AttackMontage && (ActionState & EActionState::CanAttack) != EActionState::None;
-	if (bCanAttack)
+	if (bCanAttack == false) return;
+
+	if (ComboCounter >= MaxCombo)
 	{
-		if (ComboCounter >= MaxCombo)
-		{
-			ComboCounter = 0;
-		}
-		
-		ActionState = EActionState::Attacking;
-		PlayMontageSection(AttackMontage, ComboCounter++);
+		ComboCounter = 0;
 	}
+	
+	ActionState = EActionState::Attacking;
+	PlayMontageSection(AttackMontage, ComboCounter++);
 	
 	Super::Attack();
 }
@@ -115,6 +147,20 @@ void APlayerCharacter::HeavyAttack()
 		ComboCounter = 0;
 		PlayMontageSection(SpecialAttackMontage, 0);
 		GetWorldTimerManager().SetTimer(CooldownTimer, this, &ThisClass::Interact, SpecialCooldown, false);
+	}
+}
+
+template <int32 Index>
+void APlayerCharacter::UseSkill()
+{
+	bool bCanAttack = (ActionState & EActionState::CanAttack) != EActionState::None;
+	if (bCanAttack && SkillSlots.IsValidIndex(Index) == false) return;
+	
+	if (USkillBase* Skill = SkillSlots[Index])
+	{
+		ActionState = EActionState::Attacking;
+		ComboCounter = 0;
+		Skill->Activate(this);
 	}
 }
 

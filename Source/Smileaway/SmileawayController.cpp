@@ -2,8 +2,7 @@
 
 
 #include "SmileawayController.h"
-#include "Character/SmileawayCharacter.h"
-#include "Combat/WaveSpawner.h"
+#include "Character/PlayerCharacter.h"
 #include "Components/CharacterStats.h"
 #include "Components/LevelingComponent.h"
 #include "GameFramework/SmileawayGameMode.h"
@@ -15,6 +14,14 @@ void ASmileawayController::OnPossess(APawn* InPawn)
 	InitializeUI(InPawn);
 }
 
+void ASmileawayController::EquipSkill(int32 SlotIndex, USkillData* const SkillData)
+{
+	if (auto* PC = Cast<APlayerCharacter>(GetCharacter()))
+	{
+		PC->EquipSkill(SlotIndex, SkillData);
+	}
+}
+
 void ASmileawayController::InitializeUI(APawn* InPawn)
 {
 	if (!PlayerHUD)
@@ -22,7 +29,7 @@ void ASmileawayController::InitializeUI(APawn* InPawn)
 		return;
 	}
 	
-	if (auto* PC = Cast<ASmileawayCharacter>(InPawn))
+	if (auto* PC = Cast<APlayerCharacter>(InPawn))
 	{
 		auto CharacterStats = PC->GetCharacterStats();
 		CharacterStats->OnHealthChanged.AddDynamic(PlayerHUD, &UPlayerHUD::SetHealth);
@@ -40,5 +47,7 @@ void ASmileawayController::InitializeUI(APawn* InPawn)
 		{
 			GameMode->OnRemainingEnemiesChanged.AddDynamic(PlayerHUD, &UPlayerHUD::SetRemainingEnemies);
 		}
+		
+		PC->OnSkillEquipped.AddDynamic(PlayerHUD, &UPlayerHUD::SetSkillIcon);
 	}
 }

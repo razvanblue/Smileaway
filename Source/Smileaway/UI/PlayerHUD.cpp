@@ -1,9 +1,20 @@
 ﻿#include "PlayerHUD.h"
+
+#include "SkillIcon.h"
 #include "StatusEffectIcon.h"
 #include "Components/WrapBox.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Smileaway/DataAssets/StatusEffect.h"
+#include "Smileaway/DataAssets/SkillData.h"
+#include "Smileaway/Combat/SkillBase.h"
+
+void UPlayerHUD::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	SkillIcons = {SkillIcon_0, SkillIcon_1, SkillIcon_2};
+}
 
 void UPlayerHUD::SetHealth(float CurrentHealth, float MaxHealth)
 {
@@ -41,6 +52,29 @@ void UPlayerHUD::SetRemainingEnemies(int32 NewRemainingEnemies)
 	if (!RemainingEnemiesText) return;
 	
 	RemainingEnemiesText->SetText(FText::AsNumber(NewRemainingEnemies));
+}
+
+void UPlayerHUD::SetSkillIcon(int32 SkillIndex, USkillBase* const Skill, USkillData* const SkillData)
+{
+	if (SkillIcons.IsValidIndex(SkillIndex) == false)
+	{
+		return;
+	}
+	
+	SkillIcons[SkillIndex]->SetSkill(SkillData);
+	if (Skill)
+	{
+		Skill->OnEnterCooldown.AddDynamic(SkillIcons[SkillIndex], &USkillIcon::EnterCooldown);
+		Skill->OnResetCooldown.AddDynamic(SkillIcons[SkillIndex], &USkillIcon::ResetCooldown);
+	}
+}
+
+void UPlayerHUD::EnterSkillCooldown(int32 SkillIndex)
+{
+}
+
+void UPlayerHUD::ResetSkillCooldown(int32 SkillIndex)
+{
 }
 
 void UPlayerHUD::AddStatusEffect(const UStatusEffect* Effect, float Duration)

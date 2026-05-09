@@ -18,6 +18,9 @@ class SMILEAWAY_API ASmileawayController : public APlayerController
 public:
 
     virtual void OnPossess(APawn* InPawn) override;
+	
+	UFUNCTION(BlueprintCallable)
+	void EquipSkill(int32 SlotIndex, class USkillData* const SkillData);
 
 protected:
 

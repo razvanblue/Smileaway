@@ -6,7 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUD.generated.h"
 
+class USKillBase;
+class USkillData;
 class UWrapBox;
+class USkillIcon;
 class UStatusEffect;
 class UStatusEffectIcon;
 class UProgressBar;
@@ -25,7 +28,7 @@ class SMILEAWAY_API UPlayerHUD : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	
+	virtual void NativeConstruct() override;
 	/* ---------------- Health ---------------- */
 
 	UFUNCTION(BlueprintCallable, Category = "HUD|Health")
@@ -43,6 +46,17 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "HUD|Game State")
 	void SetRemainingEnemies(int32 NewRemainingEnemies);
+	
+	/* ---------------- Skills ---------------- */
+	
+	UFUNCTION(BlueprintCallable, Category = "HUD|Skills")
+	void SetSkillIcon(int32 SkillIndex, USkillBase* const Skill, USkillData* const SkillData);
+	
+	UFUNCTION(BlueprintCallable, Category = "HUD|Skills")
+	void EnterSkillCooldown(int32 SkillIndex);
+	
+	UFUNCTION(BlueprintCallable, Category = "HUD|Skills")
+	void ResetSkillCooldown(int32 SkillIndex);
 	
 	/* ---------------- Status Effects ---------------- */
 	
@@ -84,6 +98,17 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> RemainingEnemiesText;
 	
+	/* ---------------- Skill Widgets ---------------- */
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USkillIcon> SkillIcon_0;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USkillIcon> SkillIcon_1;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USkillIcon> SkillIcon_2;
+	
 	/* ---------------- Container Widgets ---------------- */
 	
 	UPROPERTY(meta = (BindWidget))
@@ -94,4 +119,7 @@ protected:
 	
 	UPROPERTY()
 	TMap<const UStatusEffect*, TObjectPtr<UStatusEffectIcon>> ActiveStatusEffects;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<USkillIcon>> SkillIcons;
 };

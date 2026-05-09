@@ -27,7 +27,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Status Effect")
 	void InitializeStatusEffect(const UStatusEffect* InEffect, float InTotalDuration);
 
-	// Updates the remaining time. Call whenever the effect timer changes.
+	// Updates the remaining time. Called by NativeTick.
 	UFUNCTION(BlueprintCallable, Category = "Status Effect")
 	void UpdateRemainingTime(float NewRemainingTime);
 

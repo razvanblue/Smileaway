@@ -10,8 +10,12 @@ class UAnimMontage;
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+class USkillBase;
+class USkillData;
 class USpringArmComponent;
 struct FInputActionValue;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSkillEquipped, int32, SkillSlotIndex, USkillBase* const, Skill, USkillData* const, SkillData);
 
 /**
  * 
@@ -26,6 +30,11 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
+	void EquipSkill(int32 SlotIndex, USkillData* const SkillData);
+	
+	UPROPERTY(BlueprintAssignable)
+	FSkillEquipped OnSkillEquipped;
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -37,6 +46,12 @@ protected:
 	void Look(const FInputActionValue& Value);
 	
 	void HeavyAttack();
+
+	/**
+	 * @tparam Index Skill slot index 
+	 */
+	template<int32 Index>
+	void UseSkill();
 	
 	void Interact();
 	
@@ -48,6 +63,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void AttackRecovery();
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Skills")
+	TArray<TObjectPtr<USkillBase>> SkillSlots;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
@@ -69,6 +87,15 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> InteractInputAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> Skill1InputAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> Skill2InputAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UInputAction> Skill3InputAction;
 	
 	UPROPERTY(EditAnywhere, Category = Montages)
 	TObjectPtr<UAnimMontage> SpecialAttackMontage;
