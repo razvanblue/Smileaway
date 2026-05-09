@@ -2,12 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "CharacterStat.h"
+#include "NamedEntity.h"
 #include "StatusEffect.generated.h"
 
 constexpr float INFINITE_STATUS_DURATION = -1.f;
 
 UCLASS(BlueprintType)
-class SMILEAWAY_API UStatusEffect : public UDataAsset
+class SMILEAWAY_API UStatusEffect : public UNamedEntity
 {
 	GENERATED_BODY()
 
@@ -23,9 +24,6 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FStatModifier> Modifiers;
-	
-	UPROPERTY(EditAnywhere, Category = "Display")
-	TObjectPtr<UTexture2D> Icon;
 	
 	UPROPERTY(EditAnywhere, Category = "Display")
 	FLinearColor IconTint = FLinearColor::Blue;

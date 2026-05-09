@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "NamedEntity.h"
 #include "Engine/DataAsset.h"
 #include "SkillData.generated.h"
 
@@ -10,17 +11,11 @@ class USkillBase;
  * 
  */
 UCLASS(BlueprintType)
-class SMILEAWAY_API USkillData : public UPrimaryDataAsset
+class SMILEAWAY_API USkillData : public UNamedEntity
 {
 	GENERATED_BODY()
 	
 public:
-	
-	UPROPERTY(EditDefaultsOnly)
-	FText Name;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UTexture2D> Icon;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USkillBase> SkillClass;
