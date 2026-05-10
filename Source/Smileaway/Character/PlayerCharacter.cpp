@@ -156,6 +156,7 @@ void APlayerCharacter::UseSkill()
 	bool bCanAttack =
 		(ActionState & EActionState::CanAttack) != EActionState::None
 		&& SkillSlots.IsValidIndex(Index)
+		&& SkillSlots[Index] != nullptr
 		&& SkillSlots[Index]->CanActivate();
 	if (bCanAttack == false) return;
 	
