@@ -12,6 +12,7 @@
 #include "Smileaway/Combat/SkillBase.h"
 #include "Smileaway/Components/CharacterStats.h"
 #include "Smileaway/DataAssets/SkillData.h"
+#include "Smileaway/DataAssets/RewardPoolData.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -90,6 +91,31 @@ void APlayerCharacter::EquipSkill(int32 SlotIndex, const USkillData* SkillData)
 	}
 	
 	OnSkillEquipped.Broadcast(SlotIndex, Skill, SkillData);
+}
+
+void APlayerCharacter::GrantReward(const FRewardEntry* Reward)
+{
+	if (Reward == nullptr || Reward->GrantedEntity == nullptr)
+	{
+		return;
+	}
+	
+	if (auto* StatusEffect = Cast<UStatusEffect>(Reward->GrantedEntity))
+	{
+		AddStatusEffect(StatusEffect);
+	}
+	else if (auto* SkillData = Cast<USkillData>(Reward->GrantedEntity))
+	{
+		int SkillIndex;
+		for (SkillIndex = 0; SkillIndex < SkillSlots.Num(); ++SkillIndex)
+		{
+			if (SkillSlots[SkillIndex] == nullptr)
+			{
+				break;
+			}
+		}
+		EquipSkill(SkillIndex, SkillData);
+	}
 }
 
 void APlayerCharacter::BeginPlay()

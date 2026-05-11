@@ -5,7 +5,6 @@
 #include "Character/PlayerCharacter.h"
 #include "Components/CharacterStats.h"
 #include "Components/LevelingComponent.h"
-#include "DataAssets/SkillData.h"
 #include "GameFramework/SmileawayGameMode.h"
 
 void ASmileawayController::OnPossess(APawn* InPawn)
@@ -28,6 +27,14 @@ void ASmileawayController::EquipSkill(int32 SlotIndex, const USkillData* SkillDa
 	if (auto* PC = Cast<APlayerCharacter>(GetCharacter()))
 	{
 		PC->EquipSkill(SlotIndex, SkillData);
+	}
+}
+
+void ASmileawayController::GrantPlayerReward(FRewardEntry* Reward)
+{
+	if (auto* PC = Cast<APlayerCharacter>(GetCharacter()))
+	{
+		PC->GrantReward(Reward);
 	}
 }
 

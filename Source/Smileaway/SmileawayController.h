@@ -32,6 +32,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void EquipSkill(int32 SlotIndex, const USkillData* SkillData);
+	
+	void GrantPlayerReward(FRewardEntry* Reward);
 
 protected:
 

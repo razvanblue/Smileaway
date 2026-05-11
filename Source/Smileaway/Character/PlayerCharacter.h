@@ -15,6 +15,7 @@ class USkillData;
 class UStatusEffect;
 class USpringArmComponent;
 struct FInputActionValue;
+struct FRewardEntry;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSkillEquipped, int32, SkillSlotIndex, USkillBase* const, Skill, const USkillData*, SkillData);
 
@@ -34,6 +35,8 @@ public:
 	void AddStatusEffect(const UStatusEffect* Effect, float Duration = 0.f);
 	
 	void EquipSkill(int32 SlotIndex, const USkillData* SkillData);
+	
+	void GrantReward(const FRewardEntry* Reward);
 
 	UPROPERTY(BlueprintAssignable)
 	FSkillEquipped OnSkillEquipped;
