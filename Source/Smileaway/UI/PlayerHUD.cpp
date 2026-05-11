@@ -54,7 +54,7 @@ void UPlayerHUD::SetRemainingEnemies(int32 NewRemainingEnemies)
 	RemainingEnemiesText->SetText(FText::AsNumber(NewRemainingEnemies));
 }
 
-void UPlayerHUD::SetSkillIcon(int32 SkillIndex, USkillBase* const Skill, USkillData* const SkillData)
+void UPlayerHUD::SetSkillIcon(int32 SkillIndex, USkillBase* const Skill, const USkillData* SkillData)
 {
 	if (SkillIcons.IsValidIndex(SkillIndex) == false)
 	{

@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Smileaway/Combat/SkillBase.h"
+#include "Smileaway/Components/CharacterStats.h"
 #include "Smileaway/DataAssets/SkillData.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -60,7 +61,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
-void APlayerCharacter::EquipSkill(int32 SlotIndex, USkillData* const SkillData)
+void APlayerCharacter::AddStatusEffect(const UStatusEffect* Effect, float Duration)
+{
+	Stats->AddStatusEffect(Effect, Duration);
+}
+
+void APlayerCharacter::EquipSkill(int32 SlotIndex, const USkillData* SkillData)
 {
 	if (SkillSlots.IsValidIndex(SlotIndex) == false)
 	{

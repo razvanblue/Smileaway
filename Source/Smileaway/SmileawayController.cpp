@@ -5,6 +5,7 @@
 #include "Character/PlayerCharacter.h"
 #include "Components/CharacterStats.h"
 #include "Components/LevelingComponent.h"
+#include "DataAssets/SkillData.h"
 #include "GameFramework/SmileawayGameMode.h"
 
 void ASmileawayController::OnPossess(APawn* InPawn)
@@ -14,7 +15,15 @@ void ASmileawayController::OnPossess(APawn* InPawn)
 	InitializeUI(InPawn);
 }
 
-void ASmileawayController::EquipSkill(int32 SlotIndex, USkillData* const SkillData)
+void ASmileawayController::AddStatusEffect(const UStatusEffect* Effect, float Duration)
+{
+	if (auto* PC = Cast<APlayerCharacter>(GetCharacter()))
+	{
+		PC->AddStatusEffect(Effect, Duration);
+	}
+}
+
+void ASmileawayController::EquipSkill(int32 SlotIndex, const USkillData* SkillData)
 {
 	if (auto* PC = Cast<APlayerCharacter>(GetCharacter()))
 	{

@@ -3,9 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DataAssets/RewardPoolData.h"
 #include "GameFramework/PlayerController.h"
 #include "UI/PlayerHUD.h"
 #include "SmileawayController.generated.h"
+
+class USkillData;
+class UStatusEffect;
 
 /**
  * 
@@ -18,9 +22,16 @@ class SMILEAWAY_API ASmileawayController : public APlayerController
 public:
 
     virtual void OnPossess(APawn* InPawn) override;
+
+	/**
+	 * @param Effect Effect to add
+	 * @param Duration Custom duration, leave 0(default) to use the effect's default duration
+	 */
+	UFUNCTION(BlueprintCallable)
+	void AddStatusEffect(const UStatusEffect* Effect, float Duration = 0.f);
 	
 	UFUNCTION(BlueprintCallable)
-	void EquipSkill(int32 SlotIndex, class USkillData* const SkillData);
+	void EquipSkill(int32 SlotIndex, const USkillData* SkillData);
 
 protected:
 

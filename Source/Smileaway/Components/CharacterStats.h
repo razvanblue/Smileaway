@@ -32,8 +32,12 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
+	/**
+	 * @param Effect Effect to add
+	 * @param InDuration Custom duration, leave 0(default) to use the effect's default duration
+	 */
 	UFUNCTION(BlueprintCallable)
-	void AddStatusEffect(const UStatusEffect* Effect);
+	void AddStatusEffect(const UStatusEffect* Effect, float InDuration = 0.f);
 	
 	void TakeDamage(float DamageAmount);
 	

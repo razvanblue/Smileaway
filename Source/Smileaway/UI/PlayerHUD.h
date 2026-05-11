@@ -50,7 +50,7 @@ public:
 	/* ---------------- Skills ---------------- */
 	
 	UFUNCTION(BlueprintCallable, Category = "HUD|Skills")
-	void SetSkillIcon(int32 SkillIndex, USkillBase* const Skill, USkillData* const SkillData);
+	void SetSkillIcon(int32 SkillIndex, USkillBase* const Skill, const USkillData* SkillData);
 	
 	UFUNCTION(BlueprintCallable, Category = "HUD|Skills")
 	void EnterSkillCooldown(int32 SkillIndex);

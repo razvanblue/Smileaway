@@ -12,10 +12,11 @@ class UInputAction;
 class UInputMappingContext;
 class USkillBase;
 class USkillData;
+class UStatusEffect;
 class USpringArmComponent;
 struct FInputActionValue;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSkillEquipped, int32, SkillSlotIndex, USkillBase* const, Skill, USkillData* const, SkillData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSkillEquipped, int32, SkillSlotIndex, USkillBase* const, Skill, const USkillData*, SkillData);
 
 /**
  * 
@@ -30,8 +31,10 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	void EquipSkill(int32 SlotIndex, USkillData* const SkillData);
+	void AddStatusEffect(const UStatusEffect* Effect, float Duration = 0.f);
 	
+	void EquipSkill(int32 SlotIndex, const USkillData* SkillData);
+
 	UPROPERTY(BlueprintAssignable)
 	FSkillEquipped OnSkillEquipped;
 	

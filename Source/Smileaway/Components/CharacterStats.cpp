@@ -38,15 +38,16 @@ void UCharacterStats::TakeDamage(float DamageAmount)
 }
 
 
-void UCharacterStats::AddStatusEffect(const UStatusEffect* Effect)
+void UCharacterStats::AddStatusEffect(const UStatusEffect* Effect, float InDuration)
 {
 	if (Effect == nullptr) return;
 	
-	ActiveEffects.Add({Effect, Effect->Duration});
+	const float FinalDuration = InDuration == 0.f ? Effect->Duration : InDuration;
+	ActiveEffects.Add({Effect, FinalDuration});
 	
 	CalculateFinalStats();
 	
-	OnStatusEffectApplied.Broadcast(Effect, Effect->Duration);
+	OnStatusEffectApplied.Broadcast(Effect, FinalDuration);
 }
 
 
