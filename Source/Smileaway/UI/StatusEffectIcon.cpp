@@ -56,6 +56,11 @@ void UStatusEffectIcon::InitializeStatusEffect(const UStatusEffect* Effect, floa
 
 void UStatusEffectIcon::UpdateRemainingTime(float NewRemainingTime)
 {
+	if (NewRemainingTime == INFINITE_STATUS_DURATION)
+	{
+		return;
+	}
+	
 	const float RemainingTime = FMath::Clamp(NewRemainingTime, 0.f, TotalDuration);
 	const float RemainingPercent = RemainingTime / TotalDuration;
 	
