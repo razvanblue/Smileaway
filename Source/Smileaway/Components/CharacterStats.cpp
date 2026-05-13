@@ -57,6 +57,7 @@ void UCharacterStats::CalculateFinalStats()
 	std::array<float, StatCount> MultiplicativeModifiers;
 	AdditiveModifiers.fill(0.f);
 	MultiplicativeModifiers.fill(1.f);
+	const float OldMaxHP = FinalStats[EStats::MaxHP];
 	
 	for (const auto& Effect : ActiveEffects)
 	{
@@ -77,9 +78,9 @@ void UCharacterStats::CalculateFinalStats()
 		FinalStats[i] = (BaseStats[i] + AdditiveModifiers[i]) * MultiplicativeModifiers[i];
 	}
 	
-	if (Health > FinalStats[EStats::MaxHP])
+	if (FinalStats[EStats::MaxHP] != OldMaxHP)
 	{
-		Health = FinalStats[EStats::MaxHP];
+		Health += FinalStats[EStats::MaxHP] - OldMaxHP;
 		OnHealthChanged.Broadcast(Health, FinalStats[EStats::MaxHP]);
 	}
 }

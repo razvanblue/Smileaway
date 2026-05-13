@@ -15,8 +15,6 @@ void ASmileawayGameMode::StartPlay()
 	Super::StartPlay();
 	
 	RewardPool = DuplicateObject<URewardPoolData>(RewardPool, this);
-	
-	StartWave(1);
 }
 
 void ASmileawayGameMode::AdvanceWave()
