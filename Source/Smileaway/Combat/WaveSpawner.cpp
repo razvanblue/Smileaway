@@ -56,23 +56,29 @@ void UWaveSpawner::BeginWave(UWaveData* WaveData)
 void UWaveSpawner::AdvanceWave()
 {
 	GetWorld()->GetTimerManager().ClearTimer(NextEntryTimer);
-	++CurrentEntryIndex;
 	
-	if (!ActiveWave || !ActiveWave->WaveEntries.IsValidIndex(CurrentEntryIndex))
+	if (!ActiveWave || !ActiveWave->WaveEntries.IsValidIndex(CurrentEntryIndex + 1))
 	{
 		WaveComplete();
 		return;
 	}
 	
-	SpawnWaveEntry(ActiveWave->WaveEntries[CurrentEntryIndex]);
+	const auto& WaveEntries = ActiveWave->WaveEntries;
 	
-	if (CurrentEntryIndex + 1 < ActiveWave->WaveEntries.Num())
+	do // Spawn the next wave entry and all subsequent entries with delay == 0 
+	{
+		SpawnWaveEntry(WaveEntries[++CurrentEntryIndex]);
+	}
+	while (CurrentEntryIndex + 1 < WaveEntries.Num() && WaveEntries[CurrentEntryIndex + 1].SpawnDelay <= 0.05f);
+	
+	
+	if (CurrentEntryIndex + 1 < WaveEntries.Num())
 	{
 		GetWorld()->GetTimerManager().SetTimer(
 			NextEntryTimer, 
 			this,
 			&ThisClass::AdvanceWave,
-			ActiveWave->WaveEntries[CurrentEntryIndex + 1].SpawnDelay);
+			WaveEntries[CurrentEntryIndex + 1].SpawnDelay);
 	}
 }
 
