@@ -86,7 +86,7 @@ void UPlayerHUD::AddStatusEffect(const UStatusEffect* Effect, float Duration)
 	
 	if (auto* ExistingIcon = ActiveStatusEffects.Find(Effect))
 	{
-		(*ExistingIcon)->InitializeStatusEffect(Effect, Duration);
+		(*ExistingIcon)->AddStack(Duration);
 		return;
 	}
 	
@@ -100,9 +100,16 @@ void UPlayerHUD::AddStatusEffect(const UStatusEffect* Effect, float Duration)
 
 void UPlayerHUD::RemoveStatusEffect(const UStatusEffect* Effect)
 {
-	TObjectPtr<UStatusEffectIcon> ExistingIcon;
-	if (ActiveStatusEffects.RemoveAndCopyValue(Effect, ExistingIcon))
+	if (auto* ExistingIconPtr = ActiveStatusEffects.Find(Effect))
 	{
-		ExistingIcon->RemoveFromParent();
+		auto& ExistingIcon = *ExistingIconPtr;
+		
+		ExistingIcon->RemoveStack();
+		
+		if (ExistingIcon->GetStackCount() < 1)
+		{
+			ExistingIcon->RemoveFromParent();
+			ActiveStatusEffects.Remove(Effect);
+		}
 	}
 }

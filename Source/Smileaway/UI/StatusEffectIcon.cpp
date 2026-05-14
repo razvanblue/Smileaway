@@ -7,7 +7,6 @@
 
 UStatusEffectIcon::UStatusEffectIcon(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-	, ExpirationTime {0.f}
 	, TotalDuration {INFINITE_STATUS_DURATION}
 {
 }
@@ -31,7 +30,7 @@ void UStatusEffectIcon::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	
 	if (TotalDuration != INFINITE_STATUS_DURATION)
 	{
-		UpdateRemainingTime(ExpirationTime - GetWorld()->GetTimeSeconds());
+		UpdateRemainingTime(ExpirationTimes[0] - GetWorld()->GetTimeSeconds());
 	}
 }
 
@@ -42,9 +41,9 @@ void UStatusEffectIcon::InitializeStatusEffect(const UStatusEffect* Effect, floa
 		return;
 	}
 	
+	ExpirationTimes.Add(GetWorld()->GetTimeSeconds() + InTotalDuration);
 	StatusEffect = Effect;
 	TotalDuration = InTotalDuration;
-	ExpirationTime = GetWorld()->GetTimeSeconds() + InTotalDuration;
 	
 	if (StatusEffect->Icon && OverlayMaterialInstance)
 	{
@@ -72,5 +71,23 @@ void UStatusEffectIcon::UpdateRemainingTime(float NewRemainingTime)
 	if (DurationText)
 	{
 		DurationText->SetText(FText::AsNumber(FMath::CeilToInt(RemainingTime)));
+	}
+}
+
+void UStatusEffectIcon::AddStack(float Duration)
+{
+	StackCount++;
+	ExpirationTimes.Add(GetWorld()->GetTimeSeconds() + Duration);
+	StackCountText->SetText(StackCount > 1 ? FText::AsNumber(StackCount) : FText::GetEmpty());
+}
+
+void UStatusEffectIcon::RemoveStack(int32 Count)
+{
+	StackCount -= Count;
+	
+	if (StackCount > 0)
+	{
+		StackCountText->SetText(StackCount > 1 ? FText::AsNumber(StackCount) : FText::GetEmpty());
+		ExpirationTimes.RemoveAt(0, Count, EAllowShrinking::No);
 	}
 }

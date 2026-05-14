@@ -30,6 +30,14 @@ public:
 	// Updates the remaining time. Called by NativeTick.
 	UFUNCTION(BlueprintCallable, Category = "Status Effect")
 	void UpdateRemainingTime(float NewRemainingTime);
+	
+	UFUNCTION(BlueprintCallable, Category = "Status Effect")
+	void AddStack(float Duration);
+	
+	UFUNCTION(BlueprintCallable, Category = "Status Effect")
+	void RemoveStack(int32 Count = 1);
+	
+	int32 GetStackCount() const { return StackCount; }
 
 protected:
 	
@@ -40,6 +48,9 @@ protected:
 
 	UPROPERTY(meta = (BindWidgetOptional))
 	TObjectPtr<UTextBlock> DurationText;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> StackCountText;
 
 private:
 	
@@ -49,6 +60,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> OverlayMaterialInstance;
 	
-	float ExpirationTime;
+	TArray<float> ExpirationTimes;
 	float TotalDuration;
+	
+	int32 StackCount = 1;
 };
