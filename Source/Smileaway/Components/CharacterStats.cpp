@@ -58,6 +58,7 @@ void UCharacterStats::CalculateFinalStats()
 	AdditiveModifiers.fill(0.f);
 	MultiplicativeModifiers.fill(1.f);
 	const float OldMaxHP = FinalStats[EStats::MaxHP];
+	const float OldSpeed = FinalStats[EStats::Speed]; // TODO update speed
 	
 	for (const auto& Effect : ActiveEffects)
 	{
@@ -82,6 +83,11 @@ void UCharacterStats::CalculateFinalStats()
 	{
 		Health += FinalStats[EStats::MaxHP] - OldMaxHP;
 		OnHealthChanged.Broadcast(Health, FinalStats[EStats::MaxHP]);
+	}
+	
+	if (FinalStats[EStats::Speed] != OldSpeed)
+	{
+		OnSpeedChanged.Broadcast(FinalStats[EStats::Speed]);
 	}
 }
 

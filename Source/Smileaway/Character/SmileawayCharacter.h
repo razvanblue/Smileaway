@@ -53,6 +53,9 @@ protected:
 	
 	void PlayRandomMontageSection(UAnimMontage* Montage) const;
 	
+	UFUNCTION()
+	void UpdateMovementSpeed(float NewSpeed);
+	
 	UPROPERTY(VisibleAnywhere, Category = "Character Stats")
 	EActionState ActionState = EActionState::Unoccupied;
 	

@@ -19,6 +19,7 @@ struct FActiveStatusEffect
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature, float, NewHealth, float, MaxHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpeedChangedSignature, float, NewSpeed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStatusEffectAppliedSignature, const UStatusEffect*, Effect, float, Duration);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStatusEffectRemovedSignature, const UStatusEffect*, Effect);
 
@@ -55,6 +56,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnHealthChangedSignature OnHealthChanged;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnSpeedChangedSignature OnSpeedChanged;
 	
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnStatusEffectAppliedSignature OnStatusEffectApplied;

@@ -94,6 +94,9 @@ void ASmileawayCharacter::BeginPlay()
 	
 	HealthBarWidget->SetHealth(Stats->GetHealth(), Stats->GetStat(EStats::MaxHP));
 	Stats->OnHealthChanged.AddDynamic(HealthBarWidget, &UHealthBarWidgetComponent::SetHealth);
+	
+	UpdateMovementSpeed(Stats->GetStat(EStats::Speed));
+	Stats->OnSpeedChanged.AddDynamic(this, &ThisClass::UpdateMovementSpeed);
 }
 
 void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter)
@@ -190,6 +193,11 @@ void ASmileawayCharacter::PlayRandomMontageSection(UAnimMontage* Montage) const
 		const FName& SectionName = Montage->CompositeSections[SectionIndex].SectionName;
 		AnimInstance->Montage_JumpToSection(SectionName);
 	}
+}
+
+void ASmileawayCharacter::UpdateMovementSpeed(float NewSpeed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
 
