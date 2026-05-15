@@ -51,7 +51,7 @@ protected:
 	TObjectPtr<USphereComponent> Collision;
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
-	TObjectPtr<UNiagaraSystem> ExplosionEffect;
+	TObjectPtr<UParticleSystem> ExplosionEffect;
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<USoundBase> ExplosionSound;

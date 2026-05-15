@@ -13,6 +13,7 @@
 class UCharacterStats;
 class UHealthBarWidgetComponent;
 class ULevelingComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class SMILEAWAY_API ASmileawayCharacter : public ACharacter, public IHitInterface, public IGenericTeamAgentInterface
@@ -82,7 +83,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	TObjectPtr<USoundBase> HitSound;
-
-	UPROPERTY(EditAnywhere, Category = VisualEffects)
-	TObjectPtr<UParticleSystem> HitParticleSystem;
+	
+	UPROPERTY(EditDefaultsOnly, Category=VisualEffects)
+	TObjectPtr<UNiagaraSystem> HitEffect;
 };

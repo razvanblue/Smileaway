@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
 #include "Smileaway/Components/CharacterStats.h"
 #include "Smileaway/Components/LevelingComponent.h"
@@ -103,9 +104,10 @@ void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHit
 {
 	if (ActionState == EActionState::Dead) return;
 	
-	if (HitParticleSystem)
+	if (HitEffect)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(this, HitParticleSystem, ImpactPoint);
+		const FRotator EffectRotation = (Hitter->GetActorLocation() - GetActorLocation()).Rotation();
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, HitEffect, ImpactPoint, EffectRotation);
 	}
 	if (HitSound)
 	{

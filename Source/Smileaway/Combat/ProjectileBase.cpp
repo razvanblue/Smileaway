@@ -6,7 +6,6 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Smileaway/Interfaces/HitInterface.h"
 
@@ -80,8 +79,7 @@ void AProjectileBase::Explode()
 
 	if (ExplosionEffect)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			GetWorld(), ExplosionEffect, Location, Rotation);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, Location, Rotation);
 	}
 
 	if (ExplosionSound)
