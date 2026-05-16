@@ -5,6 +5,7 @@
 #include "Smileaway/DataAssets/RewardPoolData.h"
 #include "SmileawayGameMode.generated.h"
 
+class AFireZone;
 struct FGameplayTag;
 class URewardMenuWidget;
 class UWaveSpawner;
@@ -74,4 +75,6 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<URewardMenuWidget> ActiveRewardMenu;
+	
+	AFireZone* FireZone;
 };

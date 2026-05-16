@@ -1,6 +1,8 @@
 ﻿#include "SmileawayGameMode.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Smileaway/SmileawayController.h"
+#include "Smileaway/Combat/FireZone.h"
 #include "Smileaway/Combat/WaveSpawner.h"
 #include "Smileaway/DataAssets/RewardPoolData.h"
 #include "Smileaway/UI/RewardMenuWidget.h"
@@ -15,6 +17,17 @@ void ASmileawayGameMode::StartPlay()
 	Super::StartPlay();
 	
 	RewardPool = DuplicateObject<URewardPoolData>(RewardPool, this);
+	
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFireZone::StaticClass(), FoundActors);
+	if (FoundActors.Num() > 0)
+	{
+		FireZone = Cast<AFireZone>(FoundActors[0]);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("No FireZone found"));
+	}
 }
 
 void ASmileawayGameMode::AdvanceWave()
@@ -44,6 +57,8 @@ void ASmileawayGameMode::StartWave(int32 NextWave)
 	OnRemainingEnemiesChanged.Broadcast(RemainingEnemies);
 	
 	WaveSpawner->BeginWave(Waves[CurrentWave - 1]);
+	
+	FireZone->SetTargetProgress(0.2 * (CurrentWave - 1));
 }
 
 void ASmileawayGameMode::CompleteWave()
