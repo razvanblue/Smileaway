@@ -38,6 +38,11 @@ void ULaunchProjectileNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		SpawnParams.SpawnCollisionHandlingOverride =
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		
-		World->SpawnActor<AProjectileBase>(ProjectileClass, SpawnLocation, SpawnRotation, SpawnParams);
+		const FTransform SpawnTransform(SpawnRotation, SpawnLocation);
+		if (auto* Projectile = World->SpawnActorDeferred<AProjectileBase>(ProjectileClass, SpawnTransform, Owner, Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		{
+			Projectile->DamageFaction = Character->GetDamageFaction();
+			Projectile->FinishSpawning(SpawnTransform, true);
+		}
 	}
 }

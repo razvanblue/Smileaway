@@ -44,6 +44,11 @@ void AProjectileBase::BeginPlay()
 	Super::BeginPlay();
 }
 
+FGenericTeamId AProjectileBase::GetGenericTeamId() const
+{
+	return FGenericTeamId(static_cast<uint8>(DamageFaction));
+}
+
 void AProjectileBase::OnOverlap(
 	UPrimitiveComponent* OverlappedComponent,
 	AActor* OtherActor,
@@ -52,7 +57,7 @@ void AProjectileBase::OnOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	if (IHitInterface::CanDamage(GetOwner(), OtherActor))
+	if (!IHitInterface::CanDamage(this, OtherActor))
 	{
 		return;
 	}
@@ -123,7 +128,7 @@ void AProjectileBase::TriggerHitbox()
 	for (const FHitResult& Hit : Hits)
 	{
 		AActor* HitActor = Hit.GetActor();
-		if (IHitInterface::CanDamage(GetOwner(), HitActor)
+		if (IHitInterface::CanDamage(this, HitActor)
 			&& HitActor->GetClass()->ImplementsInterface(UHitInterface::StaticClass()))
 		{
 			FHitData HitData {.Damage = AttackData.AttackMultiplier};

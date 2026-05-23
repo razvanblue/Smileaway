@@ -28,6 +28,8 @@ public:
 	void GainExperience(int32 Experience);
 
 	UCharacterStats* GetCharacterStats() const { return Stats; }
+
+	EDamageFaction GetDamageFaction() const { return DamageFaction; }
 	
 	ULevelingComponent* GetLevelingComponent() const { return LevelingComponent; }
 	

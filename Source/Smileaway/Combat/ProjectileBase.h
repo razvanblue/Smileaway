@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
 #include "GameFramework/Actor.h"
 #include "Smileaway/Animation/AnimationData.h"
+#include "Smileaway/Character/CharacterTypes.h"
 #include "ProjectileBase.generated.h"
 
 class UNiagaraSystem;
@@ -13,15 +15,22 @@ class USoundBase;
 class USphereComponent;
 
 UCLASS()
-class SMILEAWAY_API AProjectileBase : public AActor
+class SMILEAWAY_API AProjectileBase : public AActor, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 	
 public:	
 	AProjectileBase();
+	UPROPERTY(EditAnywhere, Category = "Attack Data")
+	FAttackData AttackData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack Data")
+	EDamageFaction DamageFaction = EDamageFaction::Neutral;
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual FGenericTeamId GetGenericTeamId() const override;
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void OnOverlap(
@@ -55,7 +64,4 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<USoundBase> ExplosionSound;
-	
-	UPROPERTY(EditAnywhere, Category = "Attack Data")
-	FAttackData AttackData;
 };
