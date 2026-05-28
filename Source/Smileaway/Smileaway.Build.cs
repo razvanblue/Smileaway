@@ -18,7 +18,8 @@ public class Smileaway : ModuleRules
 			"Niagara",
 			"AIModule",
 			"GameplayTags",
-			"SlateCore"
+			"SlateCore",
+			"UMG"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
