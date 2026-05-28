@@ -32,22 +32,22 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void InitializeFireEffect();
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	UPROPERTY(EditAnywhere, Category = "Fire")
 	float DamagePerTick = 5.f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	UPROPERTY(EditAnywhere, Category = "Fire")
 	float OuterRadius = 9600.f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	UPROPERTY(EditAnywhere, Category = "Fire")
 	float InnerRadius = 7250.f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	UPROPERTY(EditAnywhere, Category = "Fire")
 	float FireDensity = 100.f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	UPROPERTY(EditAnywhere, Category = "Fire")
 	float BaseExpansionRate = 0.01f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	UPROPERTY(EditAnywhere, Category = "Fire")
 	float TargetProgress = 0.f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Fire")
