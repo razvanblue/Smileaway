@@ -20,13 +20,16 @@ void ASmileawayGameMode::StartPlay()
 	
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFireZone::StaticClass(), FoundActors);
-	if (FoundActors.Num() > 0)
+	for (auto* Actor : FoundActors)
 	{
-		FireZone = Cast<AFireZone>(FoundActors[0]);
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("No FireZone found"));
+		if (Actor->ActorHasTag(TEXT("FireZone1")))
+		{
+			FireZone1 = Cast<AFireZone>(Actor);
+		}
+		if (Actor->ActorHasTag(TEXT("FireZone2")))
+		{
+			FireZone2 = Cast<AFireZone>(Actor);
+		}
 	}
 }
 
@@ -58,7 +61,14 @@ void ASmileawayGameMode::StartWave(int32 NextWave)
 	
 	WaveSpawner->BeginWave(Waves[CurrentWave - 1]);
 	
-	FireZone->SetTargetProgress(0.2 * (CurrentWave - 1));
+	if (FireZone1)
+	{
+		FireZone1->SetTargetProgress(0.2 * (CurrentWave - 1));
+	}
+	if (FireZone2)
+	{
+		FireZone2->SetTargetProgress(0.333 * (CurrentWave - 6));
+	}
 }
 
 void ASmileawayGameMode::CompleteWave()

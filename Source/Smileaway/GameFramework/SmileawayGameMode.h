@@ -75,6 +75,16 @@ private:
 	
 	UPROPERTY()
 	TObjectPtr<URewardMenuWidget> ActiveRewardMenu;
+
+	/**
+	 * @note Assigned during gameplay to a fire zone actor with tag 'FireZone1'
+	 */
+	UPROPERTY()
+	TObjectPtr<AFireZone> FireZone1;
 	
-	AFireZone* FireZone;
+	/**
+	 * @note Assigned during gameplay to a fire zone actor with tag 'FireZone2'
+	 */
+	UPROPERTY()
+	TObjectPtr<AFireZone> FireZone2;
 };
