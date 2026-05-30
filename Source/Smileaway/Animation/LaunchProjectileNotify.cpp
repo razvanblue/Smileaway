@@ -5,9 +5,10 @@
 
 #include "Smileaway/Character/SmileawayCharacter.h"
 #include "Smileaway/Combat/ProjectileBase.h"
+#include "Smileaway/Components/CharacterStats.h"
 
 void ULaunchProjectileNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	const FAnimNotifyEventReference& EventReference)
+                                     const FAnimNotifyEventReference& EventReference)
 {
 	UWorld* World = MeshComp->GetWorld();
 	if (!World || !ProjectileClass)
@@ -26,22 +27,22 @@ void ULaunchProjectileNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		}
 		else
 		{
-			SocketTransform = MeshComp->GetComponentTransform();
+			SocketTransform = Owner->GetActorTransform();
 		}
 		
-		FVector SpawnLocation = SocketTransform.GetLocation() + Owner->GetActorTransform().TransformVector(LocationOffset);
 		FRotator SpawnRotation = Owner->GetActorRotation() + RotationOffset;
+		FVector SpawnLocation = SocketTransform.GetLocation() + SpawnRotation.RotateVector(LocationOffset);
+		FTransform SpawnTransform(SpawnRotation, SpawnLocation);
 		
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = Owner;
 		SpawnParams.Instigator = Character;
 		SpawnParams.SpawnCollisionHandlingOverride =
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		
-		const FTransform SpawnTransform(SpawnRotation, SpawnLocation);
 		if (auto* Projectile = World->SpawnActorDeferred<AProjectileBase>(ProjectileClass, SpawnTransform, Owner, Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
 		{
 			Projectile->DamageFaction = Character->GetDamageFaction();
+			Projectile->AttackData.AttackMultiplier *= Character->GetCharacterStats()->GetAttack();
 			Projectile->FinishSpawning(SpawnTransform, true);
 		}
 	}
