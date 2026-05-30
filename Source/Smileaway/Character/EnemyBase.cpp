@@ -28,7 +28,7 @@ void AEnemyBase::Attack()
 	if (bCanAttack)
 	{
 		//ActionState = EActionState::Attacking;
-		PlayMontageSection(AttackMontage, 0);
+		PlayRandomMontageSection(AttackMontage);
 	}
 }
 

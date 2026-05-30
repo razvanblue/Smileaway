@@ -30,6 +30,8 @@ class SMILEAWAY_API UCharacterStats : public UActorComponent
 
 public:	
 	UCharacterStats();
+	
+	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
@@ -66,9 +68,6 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnStatusEffectRemovedSignature OnStatusEffectRemoved;
 	
-protected:
-	virtual void BeginPlay() override;
-		
 private:
 	
 	void CalculateFinalStats();
