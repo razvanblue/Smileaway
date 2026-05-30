@@ -17,7 +17,10 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::Attack(AActor* Target)
 {
 	// Actor must be valid
-	SetActorRotation((Target->GetActorLocation() - GetActorLocation()).Rotation());
+	FVector LookTarget = Target->GetActorLocation();
+	LookTarget.Z = GetActorLocation().Z;
+	
+	SetActorRotation((LookTarget - GetActorLocation()).Rotation());
 
 	Attack();
 }

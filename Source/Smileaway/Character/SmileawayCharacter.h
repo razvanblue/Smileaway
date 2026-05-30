@@ -23,6 +23,12 @@ class SMILEAWAY_API ASmileawayCharacter : public ACharacter, public IHitInterfac
 public:
 	ASmileawayCharacter();
 	
+	virtual void BeginPlay() override;
+	
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter) override;
+	
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	
 	void TriggerHitbox(FAttackData AttackData);
 	
 	void GainExperience(int32 Experience);
@@ -34,11 +40,6 @@ public:
 	ULevelingComponent* GetLevelingComponent() const { return LevelingComponent; }
 	
 protected:
-	virtual void BeginPlay() override;
-	
-	virtual void GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter) override;
-	
-	virtual FGenericTeamId GetGenericTeamId() const override;
 
 	virtual void Attack();
 	

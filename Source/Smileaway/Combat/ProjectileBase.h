@@ -21,6 +21,9 @@ class SMILEAWAY_API AProjectileBase : public AActor, public IGenericTeamAgentInt
 	
 public:	
 	AProjectileBase();
+
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	
 	UPROPERTY(EditAnywhere, Category = "Attack Data")
 	FAttackData AttackData;
 
@@ -29,8 +32,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-	virtual FGenericTeamId GetGenericTeamId() const override;
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void OnOverlap(
@@ -53,7 +54,7 @@ protected:
 	
 	void TriggerHitbox();
 	
-	UPROPERTY(EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 	
 	UPROPERTY(EditAnywhere, Category = "Components")

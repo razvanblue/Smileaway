@@ -28,6 +28,50 @@ ASmileawayCharacter::ASmileawayCharacter()
 }
 
 
+// Called when the game starts or when spawned
+void ASmileawayCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	HealthBarWidget->SetHealth(Stats->GetHealth(), Stats->GetStat(EStats::MaxHP));
+	Stats->OnHealthChanged.AddDynamic(HealthBarWidget, &UHealthBarWidgetComponent::SetHealth);
+	
+	UpdateMovementSpeed(Stats->GetStat(EStats::Speed));
+	Stats->OnSpeedChanged.AddDynamic(this, &ThisClass::UpdateMovementSpeed);
+}
+
+void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter)
+{
+	if (ActionState == EActionState::Dead) return;
+	
+	if (HitEffect)
+	{
+		const FRotator EffectRotation = (Hitter->GetActorLocation() - GetActorLocation()).Rotation();
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, HitEffect, ImpactPoint, EffectRotation);
+	}
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
+	}
+	
+	if (HitData.LaunchVelocity != FVector::ZeroVector)
+	{
+		GetController()->StopMovement();
+		LaunchCharacter(HitData.LaunchVelocity, true, true);
+	}
+	
+	Stats->TakeDamage(HitData.Damage);
+	if (!Stats->IsAlive())
+	{
+		OnDeath();
+	}
+}
+
+FGenericTeamId ASmileawayCharacter::GetGenericTeamId() const
+{
+	return FGenericTeamId(static_cast<uint8>(DamageFaction));
+}
+
 void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 {
 	const auto Location = GetActorLocation();
@@ -86,50 +130,6 @@ void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 void ASmileawayCharacter::GainExperience(int32 Experience)
 {
 	LevelingComponent->GainExperience(Experience);
-}
-
-// Called when the game starts or when spawned
-void ASmileawayCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	HealthBarWidget->SetHealth(Stats->GetHealth(), Stats->GetStat(EStats::MaxHP));
-	Stats->OnHealthChanged.AddDynamic(HealthBarWidget, &UHealthBarWidgetComponent::SetHealth);
-	
-	UpdateMovementSpeed(Stats->GetStat(EStats::Speed));
-	Stats->OnSpeedChanged.AddDynamic(this, &ThisClass::UpdateMovementSpeed);
-}
-
-void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter)
-{
-	if (ActionState == EActionState::Dead) return;
-	
-	if (HitEffect)
-	{
-		const FRotator EffectRotation = (Hitter->GetActorLocation() - GetActorLocation()).Rotation();
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, HitEffect, ImpactPoint, EffectRotation);
-	}
-	if (HitSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
-	}
-	
-	if (HitData.LaunchVelocity != FVector::ZeroVector)
-	{
-		GetController()->StopMovement();
-		LaunchCharacter(HitData.LaunchVelocity, true, true);
-	}
-	
-	Stats->TakeDamage(HitData.Damage);
-	if (!Stats->IsAlive())
-	{
-		OnDeath();
-	}
-}
-
-FGenericTeamId ASmileawayCharacter::GetGenericTeamId() const
-{
-	return FGenericTeamId(static_cast<uint8>(DamageFaction));
 }
 
 void ASmileawayCharacter::Attack()
