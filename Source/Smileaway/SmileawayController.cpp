@@ -62,6 +62,7 @@ void ASmileawayController::InitializeUI(APawn* InPawn)
 		if (const auto GameMode = Cast<ASmileawayGameMode>(GetWorld()->GetAuthGameMode()))
 		{
 			GameMode->OnRemainingEnemiesChanged.AddDynamic(PlayerHUD, &UPlayerHUD::SetRemainingEnemies);
+			LevelingComponent->OnLevelUp.AddDynamic(GameMode, &ASmileawayGameMode::OnPlayerLevelUp);
 		}
 		
 		PC->OnSkillEquipped.AddDynamic(PlayerHUD, &UPlayerHUD::SetSkillIcon);

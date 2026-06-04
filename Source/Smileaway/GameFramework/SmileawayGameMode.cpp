@@ -75,8 +75,7 @@ void ASmileawayGameMode::CompleteWave()
 {
 	if (!RewardPool->Rewards.IsEmpty())
 	{
-		const auto RewardChoices = GenerateRewardChoices(3, TAG_Reward_WaveClear);
-		ShowRewardMenu();
+		ShowRewardMenu(3, TAG_Reward_WaveClear);
 	}
 	else // No rewards left, start the next wave directly
 	{
@@ -84,15 +83,21 @@ void ASmileawayGameMode::CompleteWave()
 	}
 }
 
-void ASmileawayGameMode::ShowRewardMenu()
+void ASmileawayGameMode::ShowRewardMenu(int32 RewardCount, const FGameplayTag& RewardFilter)
 {
+	if (ActiveRewardMenu)
+	{
+		PendingRewardStack.Emplace(RewardCount, RewardFilter);
+		return;
+	}
+	
 	auto* PC = Cast<ASmileawayController>(GetWorld()->GetFirstPlayerController());
 	if (!PC || !RewardMenuClass)
 	{
 		return;
 	}
 	
-	const TArray<FRewardEntry*> RewardChoices = GenerateRewardChoices(3, TAG_Reward_WaveClear);
+	const TArray<FRewardEntry*> RewardChoices = GenerateRewardChoices(RewardCount, RewardFilter);
 	if (RewardChoices.IsEmpty())
 	{
 		return;
@@ -131,11 +136,16 @@ void ASmileawayGameMode::OnRewardConfirmed(FRewardEntry* ConfirmedReward)
 	
 	ConfirmedReward->Count--;
 	
-	auto* PC = Cast<ASmileawayController>(GetWorld()->GetFirstPlayerController());
-	// TODO: Grant reward
-	
 	ResumeGameplay();
 	AdvanceWave();
+}
+
+void ASmileawayGameMode::OnPlayerLevelUp(int32 NewLevel)
+{
+	if (!RewardPool->Rewards.IsEmpty())
+	{
+		ShowRewardMenu(3, TAG_Reward_LevelUp);
+	}
 }
 
 
@@ -177,4 +187,10 @@ void ASmileawayGameMode::ResumeGameplay()
 	PC->SetInputMode(InputModeGameOnly);
 	PC->bShowMouseCursor = false;
 	PC->SetPause(false);
+	
+	if (!PendingRewardStack.IsEmpty())
+	{
+		const auto& [Count, Filter] = PendingRewardStack.Pop();
+		ShowRewardMenu(Count, Filter);
+	}
 }

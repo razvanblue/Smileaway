@@ -36,7 +36,10 @@ public:
 	void CompleteWave();
 	
 	UFUNCTION(BlueprintCallable)
-	void ShowRewardMenu();
+	void ShowRewardMenu(int32 RewardCount, const FGameplayTag& RewardFilter);
+	
+	UFUNCTION()
+	void OnPlayerLevelUp(int32 NewLevel);
 	
 	void OnEnemyDeath();
 
@@ -87,4 +90,6 @@ private:
 	 */
 	UPROPERTY()
 	TObjectPtr<AFireZone> FireZone2;
+	
+	TArray<TPair<int32, FGameplayTag>> PendingRewardStack;
 };
