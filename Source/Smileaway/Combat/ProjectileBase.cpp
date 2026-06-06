@@ -7,6 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Smileaway/Smileaway.h"
 #include "Smileaway/Interfaces/HitInterface.h"
 
 
@@ -17,13 +18,7 @@ AProjectileBase::AProjectileBase()
 	Collision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	RootComponent = Collision;
 	
-	Collision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	Collision->SetCollisionObjectType(ECC_WorldDynamic);
-	Collision->SetCollisionResponseToAllChannels(ECR_Ignore);
-	Collision->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	Collision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
-	Collision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	Collision->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+	Collision->SetCollisionProfileName(TEXT("Projectile"));
 	Collision->SetGenerateOverlapEvents(true);
 	Collision->SetNotifyRigidBodyCollision(true);
 	
@@ -107,7 +102,7 @@ void AProjectileBase::TriggerHitbox()
 	// 	Location + Forward * AttackData.RangeMin,
 	// 	Location + Forward * AttackData.RangeMax,
 	// 	GetActorRotation().Quaternion(),
-	// 	ECC_GameTraceChannel1,
+	// 	ECC_HitInteractable,
 	// 	Box
 	// );
 	TArray<AActor*> ActorsToIgnore = {this, GetOwner()};
@@ -117,7 +112,7 @@ void AProjectileBase::TriggerHitbox()
 		Location + Forward * AttackData.RangeMax,
 		Box.GetBox(),
 		GetActorRotation(),
-		UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1),
+		UEngineTypes::ConvertToTraceType(ECC_HitInteractable),
 		false,
 		ActorsToIgnore,
 		EDrawDebugTrace::ForDuration,

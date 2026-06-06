@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Smileaway/Smileaway.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
 #include "Smileaway/Components/CharacterStats.h"
 #include "Smileaway/Components/LevelingComponent.h"
@@ -24,7 +25,8 @@ ASmileawayCharacter::ASmileawayCharacter()
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_HitInteractable, ECR_Overlap);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 }
 
 
@@ -84,7 +86,7 @@ void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 	// 	Location + Forward * AttackData.RangeMin,
 	// 	Location + Forward * AttackData.RangeMax,
 	// 	GetActorRotation().Quaternion(),
-	// 	ECC_GameTraceChannel1,
+	// 	ECC_HitInteractable,
 	// 	Box
 	// );
 	TArray<AActor*> ActorsToIgnore = {this};
@@ -94,7 +96,7 @@ void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 		Location + Forward * AttackData.RangeMax,
 		Box.GetBox(),
 		GetActorRotation(),
-		UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1),
+		UEngineTypes::ConvertToTraceType(ECC_HitInteractable),
 		false,
 		ActorsToIgnore,
 		EDrawDebugTrace::ForDuration,
