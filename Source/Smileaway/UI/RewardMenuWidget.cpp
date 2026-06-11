@@ -2,6 +2,7 @@
 #include "RewardOptionWidget.h"
 #include "Components/Button.h"
 #include "Components/HorizontalBox.h"
+#include "Components/TextBlock.h"
 #include "Smileaway/DataAssets/RewardPoolData.h"
 
 void URewardMenuWidget::NativeConstruct()
@@ -23,6 +24,14 @@ void URewardMenuWidget::InitializeRewards(const TArray<FRewardEntry*>& RewardEnt
 		RewardBox->AddChildToHorizontalBox(RewardWidget);
 		RewardWidget->InitializeReward(Reward);
 		RewardWidget->OnRewardSelected.AddDynamic(this, &ThisClass::SelectReward);
+	}
+}
+
+void URewardMenuWidget::SetTitle(FText NewTitle)
+{
+	if (TitleText)
+	{
+		TitleText->SetText(NewTitle);
 	}
 }
 

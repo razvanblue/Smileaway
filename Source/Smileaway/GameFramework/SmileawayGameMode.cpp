@@ -110,6 +110,7 @@ void ASmileawayGameMode::ShowRewardMenu(int32 RewardCount, const FGameplayTag& R
 	}
 
 	ActiveRewardMenu = CreateWidget<URewardMenuWidget>(PC, RewardMenuClass);
+	ActiveRewardMenu->SetTitle(FText::FromString(RewardFilter == TAG_Reward_LevelUp ? "Level Up" : RewardFilter == TAG_Reward_WaveClear ? "Wave Clear" : ""));
 	ActiveRewardMenu->InitializeRewards(RewardChoices);
 	ActiveRewardMenu->OnRewardConfirmed.AddUObject(this, &ThisClass::OnRewardConfirmed);
 	ActiveRewardMenu->OnRewardConfirmed.AddUObject(PC, &ASmileawayController::GrantPlayerReward);
