@@ -97,28 +97,28 @@ void AProjectileBase::TriggerHitbox()
 	
 	FCollisionShape Box = FCollisionShape::MakeBox(FVector{0.f, AttackData.HitboxHalfWidth, AttackData.HitboxHalfHeight});
 	TArray<FHitResult> Hits;
-	// GetWorld()->SweepMultiByChannel(
-	// 	Hits,
-	// 	Location + Forward * AttackData.RangeMin,
-	// 	Location + Forward * AttackData.RangeMax,
-	// 	GetActorRotation().Quaternion(),
-	// 	ECC_HitInteractable,
-	// 	Box
-	// );
-	TArray<AActor*> ActorsToIgnore = {this, GetOwner()};
-	UKismetSystemLibrary::BoxTraceMulti(
-		this,
+	GetWorld()->SweepMultiByChannel(
+		Hits,
 		Location + Forward * AttackData.RangeMin,
 		Location + Forward * AttackData.RangeMax,
-		Box.GetBox(),
-		GetActorRotation(),
-		UEngineTypes::ConvertToTraceType(ECC_HitInteractable),
-		false,
-		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration,
-		Hits,
-		true
+		GetActorRotation().Quaternion(),
+		ECC_HitInteractable,
+		Box
 	);
+	// TArray<AActor*> ActorsToIgnore = {this, GetOwner()};
+	// UKismetSystemLibrary::BoxTraceMulti(
+	// 	this,
+	// 	Location + Forward * AttackData.RangeMin,
+	// 	Location + Forward * AttackData.RangeMax,
+	// 	Box.GetBox(),
+	// 	GetActorRotation(),
+	// 	UEngineTypes::ConvertToTraceType(ECC_HitInteractable),
+	// 	false,
+	// 	ActorsToIgnore,
+	// 	EDrawDebugTrace::ForDuration,
+	// 	Hits,
+	// 	true
+	// );
 	
 	for (const FHitResult& Hit : Hits)
 	{
