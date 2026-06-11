@@ -8,6 +8,8 @@
 #include "UI/PlayerHUD.h"
 #include "SmileawayController.generated.h"
 
+class UInputAction;
+class UInputMappingContext;
 class USkillData;
 class UStatusEffect;
 
@@ -33,13 +35,43 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EquipSkill(int32 SlotIndex, const USkillData* SkillData);
 	
+	UFUNCTION(BlueprintCallable)
+	void PauseGame();
+	
+	UFUNCTION(BlueprintCallable)
+	void UnpauseGame();
+	
 	void GrantPlayerReward(FRewardEntry* Reward);
 
 protected:
-
-    UPROPERTY(BlueprintReadWrite)
-    TObjectPtr<UPlayerHUD> PlayerHUD;
+	
+	virtual void BeginPlay() override;
+	
+	virtual void SetupInputComponent() override;
 
 	UFUNCTION(BlueprintCallable)
-    void InitializeUI(APawn* InPawn);
+	void InitializeUI(APawn* InPawn);
+
+    UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<UPlayerHUD> PlayerHUD;
+	
+	UPROPERTY(EditDefaultsOnly, Category="PauseMenu")
+	TSubclassOf<UUserWidget> PauseMenuClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PauseMenu")
+	TObjectPtr<UInputMappingContext> GameplayInputMappingContext;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PauseMenu")
+	TObjectPtr<UInputMappingContext> MenuInputMappingContext;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PauseMenu")
+	TObjectPtr<UInputAction> PauseInputAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PauseMenu")
+	TObjectPtr<UInputAction> UnpauseInputAction;
+	
+private:
+	
+	UPROPERTY(Transient)
+	TObjectPtr<UUserWidget> PauseMenu;
 };

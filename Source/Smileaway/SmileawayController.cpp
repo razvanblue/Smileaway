@@ -2,6 +2,10 @@
 
 
 #include "SmileawayController.h"
+
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "AI/NavigationSystemBase.h"
 #include "Character/PlayerCharacter.h"
 #include "Components/CharacterStats.h"
 #include "Components/LevelingComponent.h"
@@ -30,11 +34,72 @@ void ASmileawayController::EquipSkill(int32 SlotIndex, const USkillData* SkillDa
 	}
 }
 
+void ASmileawayController::PauseGame()
+{
+	if (PauseMenu == nullptr)
+	{
+		PauseMenu = CreateWidget<UUserWidget>(this, PauseMenuClass);
+		PauseMenu->AddToViewport();
+	}
+	PauseMenu->SetVisibility(ESlateVisibility::Visible);
+	
+	SetPause(true);
+	FInputModeGameAndUI InputModeGameAndUI;
+	SetInputMode(InputModeGameAndUI);
+	bShowMouseCursor = true;
+	
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(GameplayInputMappingContext);
+		Subsystem->AddMappingContext(MenuInputMappingContext, 1);
+	}
+}
+
+void ASmileawayController::UnpauseGame()
+{
+	if (PauseMenu)
+	{
+		PauseMenu->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	
+	FInputModeGameOnly InputModeGameOnly;
+	SetInputMode(InputModeGameOnly);
+	bShowMouseCursor = false;
+	SetPause(false);
+	
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(MenuInputMappingContext);
+		Subsystem->AddMappingContext(GameplayInputMappingContext, 1);
+	}
+}
+
 void ASmileawayController::GrantPlayerReward(FRewardEntry* Reward)
 {
 	if (auto* PC = Cast<APlayerCharacter>(GetCharacter()))
 	{
 		PC->GrantReward(Reward);
+	}
+}
+
+void ASmileawayController::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(GameplayInputMappingContext, 0);
+	}
+}
+
+void ASmileawayController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
+	{
+		EnhancedInputComponent->BindAction(PauseInputAction, ETriggerEvent::Triggered, this, &ThisClass::PauseGame);
+		EnhancedInputComponent->BindAction(UnpauseInputAction, ETriggerEvent::Triggered, this, &ThisClass::UnpauseGame);
 	}
 }
 

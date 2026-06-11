@@ -16,6 +16,12 @@ void ASmileawayGameMode::StartPlay()
 {
 	Super::StartPlay();
 	
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	FInputModeGameOnly InputModeGameOnly;
+	PC->SetInputMode(InputModeGameOnly);
+	PC->bShowMouseCursor = false;
+	PC->SetPause(false);
+	
 	RewardPool = DuplicateObject<URewardPoolData>(RewardPool, this);
 	
 	TArray<AActor*> FoundActors;
