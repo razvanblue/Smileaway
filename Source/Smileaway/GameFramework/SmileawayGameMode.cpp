@@ -144,7 +144,11 @@ void ASmileawayGameMode::OnRewardConfirmed(FRewardEntry* ConfirmedReward)
 	ConfirmedReward->Count--;
 	
 	ResumeGameplay();
-	AdvanceWave();
+	
+	if (RemainingEnemies <= 0)
+	{
+		AdvanceWave();
+	}
 }
 
 void ASmileawayGameMode::OnPlayerLevelUp(int32 NewLevel)
