@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUD.generated.h"
 
+class UHealthBarWidget;
 class USKillBase;
 class USkillData;
 class UWrapBox;
@@ -71,13 +72,7 @@ protected:
 	/* ---------------- Health Widgets ---------------- */
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UProgressBar> HealthBar;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> CurrentHealthText;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> MaxHealthText;
+	TObjectPtr<UHealthBarWidget> HealthBar;
 
 	/* ---------------- Experience Widgets ---------------- */
 

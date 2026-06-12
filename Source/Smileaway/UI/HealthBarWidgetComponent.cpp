@@ -15,6 +15,6 @@ void UHealthBarWidgetComponent::SetHealth(float NewHealth, float MaxHealth)
 {
 	if (HealthBarWidget)
 	{
-		HealthBarWidget->HealthBar->SetPercent(NewHealth / MaxHealth);
+		HealthBarWidget->SetHealthPercent(NewHealth, MaxHealth);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿#include "PlayerHUD.h"
 
+#include "HealthBarWidget.h"
 #include "SkillIcon.h"
 #include "StatusEffectIcon.h"
 #include "Components/WrapBox.h"
@@ -18,14 +19,12 @@ void UPlayerHUD::NativeConstruct()
 
 void UPlayerHUD::SetHealth(float CurrentHealth, float MaxHealth)
 {
-	if (!HealthBar || !CurrentHealthText || !MaxHealthText)
+	if (!HealthBar)
 	{
 		return;
 	}
 	
-	HealthBar->SetPercent(CurrentHealth / MaxHealth);
-	CurrentHealthText->SetText(FText::AsNumber(FMath::RoundToInt(CurrentHealth)));
-	MaxHealthText->SetText(FText::AsNumber(FMath::RoundToInt(MaxHealth)));
+	HealthBar->SetHealthPercent(CurrentHealth, MaxHealth);
 }
 
 void UPlayerHUD::SetLevel(int32 NewLevel)
