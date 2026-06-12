@@ -59,7 +59,7 @@ void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHit
 	if (HitData.LaunchVelocity != FVector::ZeroVector)
 	{
 		GetController()->StopMovement();
-		LaunchCharacter(HitData.LaunchVelocity, true, true);
+		LaunchCharacter(HitData.LaunchVelocity * Stats->GetStat(EStats::KnockbackMultiplier), true, true);
 	}
 	
 	Stats->TakeDamage(HitData.Damage);

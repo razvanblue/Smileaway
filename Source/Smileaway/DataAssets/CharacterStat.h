@@ -11,6 +11,7 @@ enum class EStats : uint8
 	MaxHP UMETA(DisplayName = "Max HP"),
 	Attack UMETA(DisplayName = "Attack"),
 	Speed UMETA(DisplayName = "Speed"),
+	KnockbackMultiplier UMETA(DisplayName = "Knockback Multiplier"),
 	
 	MAX UMETA(Hidden)
 };
@@ -56,9 +57,12 @@ struct FStats
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Speed  = 1.f;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float KnockbackMultiplier = 1.f;
+	
 	FORCEINLINE TStatArray<float> Pack() const
 	{
-		return {MaxHP, Attack, Speed};
+		return {MaxHP, Attack, Speed, KnockbackMultiplier};
 	}
 };
 static_assert(sizeof(FStats) == sizeof(float) * StatCount, "FStats should be same size as EStats enum");
