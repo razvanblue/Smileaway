@@ -25,6 +25,8 @@ void UDodgeNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSeque
 	FRotator NewRotationRate{ MovementComponent->RotationRate };
 	NewRotationRate.Yaw *= TurnRateMultiplier; // Only affect yaw
 	MovementComponent->RotationRate = NewRotationRate;
+	
+	MovementComponent->Velocity = Character->GetActorForwardVector() * OriginalSpeed;
 }
 
 void UDodgeNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -41,4 +43,19 @@ void UDodgeNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenc
 	
 	MovementComponent->MaxWalkSpeed = OriginalSpeed;
 	MovementComponent->RotationRate = OriginalRotationRate;
+}
+
+void UDodgeNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
+{
+	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
+	
+	if (!MeshComp) return;
+
+	ACharacter* Character = Cast<ACharacter>(MeshComp->GetOwner());
+	if (!Character) return;
+
+	UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement();
+	if (!MovementComponent) return;
+	
+	Character->AddMovementInput(Character->GetActorForwardVector(), 1.f);
 }
