@@ -8,6 +8,7 @@
 class AFireZone;
 struct FGameplayTag;
 class URewardMenuWidget;
+class UUserWidget;
 class UWaveSpawner;
 class UWaveData;
 
@@ -25,7 +26,6 @@ public:
 	ASmileawayGameMode();
 	
 	virtual void StartPlay() override;
-	
 	UFUNCTION(BlueprintCallable)
 	void AdvanceWave();
 	
@@ -34,6 +34,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void CompleteWave();
+
+	void LevelClear();
 	
 	UFUNCTION(BlueprintCallable)
 	void ShowRewardMenu(int32 RewardCount, const FGameplayTag& RewardFilter);
@@ -67,8 +69,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Rewards")
 	TObjectPtr<URewardPoolData> RewardPool;
 	
-	UPROPERTY(EditDefaultsOnly, Category="Rewards")
+	UPROPERTY(EditDefaultsOnly, Category="Menu")
 	TSubclassOf<URewardMenuWidget> RewardMenuClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Menu")
+	TSubclassOf<UUserWidget> LevelClearMenuClass;
 	
 private:
 	

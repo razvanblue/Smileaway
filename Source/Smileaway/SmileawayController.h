@@ -42,6 +42,8 @@ public:
 	void UnpauseGame();
 	
 	void GrantPlayerReward(FRewardEntry* Reward);
+	
+	void OnGameOver();
 
 protected:
 	
@@ -55,19 +57,22 @@ protected:
     UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UPlayerHUD> PlayerHUD;
 	
-	UPROPERTY(EditDefaultsOnly, Category="PauseMenu")
+	UPROPERTY(EditDefaultsOnly, Category = "Menu")
 	TSubclassOf<UUserWidget> PauseMenuClass;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PauseMenu")
+	UPROPERTY(EditDefaultsOnly, Category = "Menu")
+	TSubclassOf<UUserWidget> GameOverMenuClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> GameplayInputMappingContext;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PauseMenu")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> MenuInputMappingContext;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PauseMenu")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> PauseInputAction;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PauseMenu")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> UnpauseInputAction;
 	
 private:

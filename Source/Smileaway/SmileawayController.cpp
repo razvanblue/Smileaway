@@ -82,6 +82,23 @@ void ASmileawayController::GrantPlayerReward(FRewardEntry* Reward)
 	}
 }
 
+void ASmileawayController::OnGameOver()
+{
+	auto* GameOverMenu = CreateWidget<UUserWidget>(this, GameOverMenuClass);
+	GameOverMenu->AddToViewport();
+	GameOverMenu->SetVisibility(ESlateVisibility::Visible);
+	
+	SetPause(true);
+	FInputModeUIOnly InputModeUIOnly;
+	SetInputMode(InputModeUIOnly);
+	bShowMouseCursor = true;
+	
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(GameplayInputMappingContext);
+	}
+}
+
 void ASmileawayController::BeginPlay()
 {
 	Super::BeginPlay();

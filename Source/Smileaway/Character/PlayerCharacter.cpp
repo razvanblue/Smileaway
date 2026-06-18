@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Smileaway/SmileawayController.h"
 #include "Smileaway/Combat/SkillBase.h"
 #include "Smileaway/Components/CharacterStats.h"
 #include "Smileaway/DataAssets/SkillData.h"
@@ -229,7 +230,15 @@ void APlayerCharacter::Dodge()
 
 void APlayerCharacter::OnDeath()
 {
-	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	
+	if (auto* PC = Cast<ASmileawayController>(GetController()))
+	{
+		PC->OnGameOver();
+	}
+	else
+	{
+		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	}
 }
 
 void APlayerCharacter::AttackRecovery()

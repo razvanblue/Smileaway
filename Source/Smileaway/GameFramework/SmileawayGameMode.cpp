@@ -47,8 +47,7 @@ void ASmileawayGameMode::AdvanceWave()
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Level Complete"));
-		// TODO: Level clear
+		LevelClear();
 	}
 }
 
@@ -87,6 +86,24 @@ void ASmileawayGameMode::CompleteWave()
 	{
 		AdvanceWave();
 	}
+}
+
+void ASmileawayGameMode::LevelClear()
+{
+	auto* PC = Cast<ASmileawayController>(GetWorld()->GetFirstPlayerController());
+	if (!PC || !LevelClearMenuClass)
+	{
+		return;
+	}
+	
+	auto* LevelClearMenu = CreateWidget<UUserWidget>(PC, LevelClearMenuClass);
+	LevelClearMenu->AddToViewport();
+	LevelClearMenu->SetVisibility(ESlateVisibility::Visible);
+	
+	PC->SetPause(true);
+	FInputModeUIOnly InputModeUIOnly;
+	PC->SetInputMode(InputModeUIOnly);
+	PC->bShowMouseCursor = true;
 }
 
 void ASmileawayGameMode::ShowRewardMenu(int32 RewardCount, const FGameplayTag& RewardFilter)
