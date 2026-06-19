@@ -130,6 +130,21 @@ void APlayerCharacter::BeginPlay()
 	{
 		MaxCombo = AttackMontage->CompositeSections.Num();
 	}
+	
+	
+	if (HeavyAttackSkillData)
+	{
+		HeavyAttackSkill = NewObject<USkillBase>(this, HeavyAttackSkillData->SkillClass ? HeavyAttackSkillData->SkillClass.Get() : USkillBase::StaticClass());
+		HeavyAttackSkill->Cooldown = HeavyAttackSkillData->Cooldown;
+		HeavyAttackSkill->SkillMontage = HeavyAttackSkillData->SkillMontage;
+	}
+	
+	if (DodgeSkillData)
+	{
+		DodgeSkill = NewObject<USkillBase>(this, DodgeSkillData->SkillClass ? DodgeSkillData->SkillClass.Get() : USkillBase::StaticClass());
+		DodgeSkill->Cooldown = DodgeSkillData->Cooldown;
+		DodgeSkill->SkillMontage = DodgeSkillData->SkillMontage;
+	}
 }
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
@@ -173,13 +188,13 @@ void APlayerCharacter::Attack()
 
 void APlayerCharacter::HeavyAttack()
 {
-	bool bCanAttack = AttackMontage && (ActionState & EActionState::CanAttack) != EActionState::None;
-	if (bCanAttack && !GetWorldTimerManager().IsTimerActive(CooldownTimer))
+	bool bCanAttack = HeavyAttackSkill && HeavyAttackSkill->CanActivate() && (ActionState & EActionState::CanAttack) != EActionState::None;
+	if (bCanAttack)
 	{
 		ActionState = EActionState::Attacking;
 		ComboCounter = 0;
-		PlayMontageSection(SpecialAttackMontage, 0);
-		GetWorldTimerManager().SetTimer(CooldownTimer, this, &ThisClass::Interact, SpecialCooldown, false);
+
+		HeavyAttackSkill->Activate(this);
 	}
 }
 
@@ -215,14 +230,14 @@ void APlayerCharacter::AttackEnd()
 
 void APlayerCharacter::Dodge()
 {
-	if (DodgeMontage && (ActionState & EActionState::CanAttack) != EActionState::None)
+	if (DodgeSkill && DodgeSkill->CanActivate() && (ActionState & EActionState::CanAttack) != EActionState::None)
 	{
 		StopAnimMontage(AttackMontage);
 		
 		ComboCounter = 0;
 		ActionState = EActionState::Attacking;
 		
-		PlayRandomMontageSection(DodgeMontage);
+		DodgeSkill->Activate(this);
 	
 		Super::Dodge();
 	}

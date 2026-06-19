@@ -73,6 +73,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Skills")
 	TArray<TObjectPtr<USkillBase>> SkillSlots;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Skills")
+	TObjectPtr<USkillData> HeavyAttackSkillData;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Skills")
+	TObjectPtr<USkillData> DodgeSkillData;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 	
@@ -120,8 +126,12 @@ private:
 	
 	bool CanMove();
 	
-	FTimerHandle CooldownTimer;
-	float SpecialCooldown  = 3.f;
+	UPROPERTY(EditDefaultsOnly, Category = "Skills")
+	TObjectPtr<USkillBase> HeavyAttackSkill;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Skills")
+	TObjectPtr<USkillBase> DodgeSkill;
+
 	int32 ComboCounter = 0;
 	int32 MaxCombo = 0;
 	
