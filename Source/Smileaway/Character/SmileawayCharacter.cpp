@@ -2,11 +2,11 @@
 
 
 #include "SmileawayCharacter.h"
-
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Materials/MaterialInterface.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Smileaway/Smileaway.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
@@ -40,6 +40,18 @@ void ASmileawayCharacter::BeginPlay()
 	
 	UpdateMovementSpeed(Stats->GetStat(EStats::Speed));
 	Stats->OnSpeedChanged.AddDynamic(this, &ThisClass::UpdateMovementSpeed);
+	
+	InitializeHitFlash();
+}
+
+void ASmileawayCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+	if (FlashTimeline.IsPlaying())
+	{
+		FlashTimeline.TickTimeline(DeltaTime);
+	}
 }
 
 void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter)
@@ -55,6 +67,8 @@ void ASmileawayCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHit
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
 	}
+	
+	PlayHitFlashEffect();
 	
 	if (HitData.LaunchVelocity != FVector::ZeroVector)
 	{
@@ -199,9 +213,54 @@ void ASmileawayCharacter::PlayRandomMontageSection(UAnimMontage* Montage) const
 	}
 }
 
+void ASmileawayCharacter::PlayHitFlashEffect()
+{
+	if (HitFlashMaterialInstance && GetMesh())
+	{
+		GetMesh()->SetOverlayMaterial(HitFlashMaterialInstance);
+		FlashTimeline.PlayFromStart();
+	}
+}
+
 void ASmileawayCharacter::UpdateMovementSpeed(float NewSpeed)
 {
 	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
+void ASmileawayCharacter::HandleFlashTimelineProgress(float Value)
+{
+	if (HitFlashMaterialInstance)
+	{
+		HitFlashMaterialInstance->SetScalarParameterValue("FlashIntensity", Value);
+	}
+}
+
+void ASmileawayCharacter::HandleFlashTimelineFinished()
+{
+	if (GetMesh())
+	{
+		// Optimization: Strip the material off entirely so the GPU ignores the pass completely
+		GetMesh()->SetOverlayMaterial(nullptr);
+	}
+}
+
+void ASmileawayCharacter::InitializeHitFlash()
+{
+	if (HitFlashOverlay)
+	{
+		HitFlashMaterialInstance = UMaterialInstanceDynamic::Create(HitFlashOverlay, this);
+		if (HitFlashCurve)
+		{
+			FOnTimelineFloat ProgressDelegate;
+			ProgressDelegate.BindUFunction(this, FName("HandleFlashTimelineProgress"));
+
+			FOnTimelineEvent FinishedDelegate;
+			FinishedDelegate.BindUFunction(this, FName("HandleFlashTimelineFinished"));
+
+			FlashTimeline.AddInterpFloat(HitFlashCurve, ProgressDelegate);
+
+			FlashTimeline.SetTimelineFinishedFunc(FinishedDelegate);
+		}
+	}
+}
 

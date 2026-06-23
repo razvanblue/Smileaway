@@ -6,6 +6,7 @@
 #include "CharacterTypes.h"
 #include "GameFramework/Character.h"
 #include "GenericTeamAgentInterface.h"
+#include "Components/TimelineComponent.h"
 #include "Smileaway/Animation/AnimationData.h"
 #include "Smileaway/Interfaces/HitInterface.h"
 #include "SmileawayCharacter.generated.h"
@@ -13,6 +14,7 @@
 class UCharacterStats;
 class UHealthBarWidgetComponent;
 class ULevelingComponent;
+class UMaterialInterface;
 class UNiagaraSystem;
 
 UCLASS()
@@ -22,9 +24,11 @@ class SMILEAWAY_API ASmileawayCharacter : public ACharacter, public IHitInterfac
 
 public:
 	ASmileawayCharacter();
-	
+
 	virtual void BeginPlay() override;
 	
+	virtual void Tick(float DeltaTime) override;
+
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter) override;
 	
 	virtual FGenericTeamId GetGenericTeamId() const override;
@@ -56,6 +60,8 @@ protected:
 	void PlayMontageSection(UAnimMontage* Montage, int32 SectionIndex) const;
 	
 	void PlayRandomMontageSection(UAnimMontage* Montage) const;
+	
+	void PlayHitFlashEffect();
 	
 	UFUNCTION()
 	void UpdateMovementSpeed(float NewSpeed);
@@ -89,4 +95,25 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category=VisualEffects)
 	TObjectPtr<UNiagaraSystem> HitEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category=VisualEffects)
+	TObjectPtr<UMaterialInterface> HitFlashOverlay;
+	
+	UPROPERTY(EditDefaultsOnly, Category = VisualEffects)
+	UCurveFloat* HitFlashCurve;
+	
+private:
+	
+	UFUNCTION()
+	void HandleFlashTimelineProgress(float Value);
+
+	UFUNCTION()
+	void HandleFlashTimelineFinished();
+	
+	void InitializeHitFlash();
+	
+	UPROPERTY(Transient)
+	TObjectPtr<UMaterialInstanceDynamic> HitFlashMaterialInstance;
+	
+	FTimeline FlashTimeline;
 };

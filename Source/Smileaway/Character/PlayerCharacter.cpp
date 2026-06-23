@@ -45,6 +45,17 @@ APlayerCharacter::APlayerCharacter()
 	SkillSlots.SetNum(3);
 }
 
+void APlayerCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter)
+{
+	Super::GetHit_Implementation(ImpactPoint, HitData, Hitter);
+	
+	if (CameraShake)
+	{
+		// Inner Radius < Outer Radius  => cliff falloff at inner radius
+		UGameplayStatics::PlayWorldCameraShake(GetWorld(), CameraShake, GetActorLocation(), 5000.f, 0.f);
+	}
+}
+
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

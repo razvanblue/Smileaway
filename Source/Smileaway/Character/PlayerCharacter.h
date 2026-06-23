@@ -8,6 +8,7 @@
 
 class UAnimMontage;
 class UCameraComponent;
+class UCameraShakeBase;
 class UInputAction;
 class UInputMappingContext;
 class USkillBase;
@@ -29,6 +30,8 @@ class SMILEAWAY_API APlayerCharacter : public ASmileawayCharacter
 
 public:
 	APlayerCharacter();
+	
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -108,6 +111,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UInputAction> Skill3InputAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = VisualEffects)
+	TSubclassOf<UCameraShakeBase> CameraShake;
 	
 	UPROPERTY(EditAnywhere, Category = Montages)
 	TObjectPtr<UAnimMontage> SpecialAttackMontage;
