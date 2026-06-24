@@ -28,9 +28,19 @@ void UCharacterStats::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 }
 
 
+void UCharacterStats::RecoverHealth(float RecoveryAmount)
+{
+	if (IsAlive() && RecoveryAmount > 0.f)
+	{
+		Health = FMath::Min(FinalStats[EStats::MaxHP], Health + RecoveryAmount);
+		OnHealthChanged.Broadcast(Health, FinalStats[EStats::MaxHP]);
+	}
+}
+
+
 void UCharacterStats::TakeDamage(float DamageAmount)
 {
-	if (Health > 0.f && DamageAmount > 0.f)
+	if (IsAlive() && DamageAmount > 0.f)
 	{
 		Health = FMath::Max(0.f, Health - DamageAmount);
 		OnHealthChanged.Broadcast(Health, FinalStats[EStats::MaxHP]);

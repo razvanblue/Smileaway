@@ -2,8 +2,10 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Smileaway/SmileawayController.h"
+#include "Smileaway/Character/PlayerCharacter.h"
 #include "Smileaway/Combat/FireZone.h"
 #include "Smileaway/Combat/WaveSpawner.h"
+#include "Smileaway/Components/CharacterStats.h"
 #include "Smileaway/DataAssets/RewardPoolData.h"
 #include "Smileaway/UI/RewardMenuWidget.h"
 
@@ -78,6 +80,11 @@ void ASmileawayGameMode::StartWave(int32 NextWave)
 
 void ASmileawayGameMode::CompleteWave()
 {
+	if (auto* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+	{
+		Player->GetCharacterStats()->RecoverHealth(10.f);
+	}
+	
 	if (!RewardPool->Rewards.IsEmpty())
 	{
 		ShowRewardMenu(3, TAG_Reward_WaveClear);

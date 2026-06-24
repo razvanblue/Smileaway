@@ -42,6 +42,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddStatusEffect(const UStatusEffect* Effect, float InDuration = 0.f);
 	
+	void RecoverHealth(float RecoveryAmount);
+	
 	void TakeDamage(float DamageAmount);
 	
 	float GetAttack();

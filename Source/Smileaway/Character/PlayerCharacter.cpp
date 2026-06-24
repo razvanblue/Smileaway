@@ -12,6 +12,7 @@
 #include "Smileaway/SmileawayController.h"
 #include "Smileaway/Combat/SkillBase.h"
 #include "Smileaway/Components/CharacterStats.h"
+#include "Smileaway/Components/LevelingComponent.h"
 #include "Smileaway/DataAssets/SkillData.h"
 #include "Smileaway/DataAssets/RewardPoolData.h"
 
@@ -43,6 +44,8 @@ APlayerCharacter::APlayerCharacter()
 	FollowCamera->SetupAttachment(CameraBoom);
 	
 	SkillSlots.SetNum(3);
+	
+	LevelingComponent->OnLevelUp.AddDynamic(this, &ThisClass::OnLevelUp);
 }
 
 void APlayerCharacter::GetHit_Implementation(const FVector& ImpactPoint, FHitData HitData, AActor* Hitter)
@@ -265,6 +268,11 @@ void APlayerCharacter::OnDeath()
 	{
 		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
+}
+
+void APlayerCharacter::OnLevelUp(int32 NewLevel)
+{
+	Stats->RecoverHealth(10.f);
 }
 
 void APlayerCharacter::AttackRecovery()

@@ -70,6 +70,9 @@ protected:
 	
 	virtual void OnDeath() override;
 	
+	UFUNCTION()
+	void OnLevelUp(int32 NewLevel);
+	
 	UFUNCTION(BlueprintCallable)
 	void AttackRecovery();
 	
