@@ -17,6 +17,11 @@ void UIFrameNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 	
 	Character->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_HitInteractable, ECR_Ignore);
 	Character->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Ignore);
+	
+	if (OverlayMaterial)
+	{
+		Character->GetMesh()->SetOverlayMaterial(OverlayMaterial);
+	}
 }
 
 void UIFrameNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -29,4 +34,9 @@ void UIFrameNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequen
 	
 	Character->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_HitInteractable, ECR_Overlap);
 	Character->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
+	
+	if (OverlayMaterial)
+	{
+		Character->GetMesh()->SetOverlayMaterial(nullptr);
+	}
 }
