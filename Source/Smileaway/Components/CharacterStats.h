@@ -55,6 +55,8 @@ public:
 	float GetStat(EStats Stat);
 	
 	float GetBaseStat(EStats Stat);
+	
+	int32 GetActiveStatusEffectCount() const { return ActiveEffects.Num(); }
 
 	bool IsAlive();
 

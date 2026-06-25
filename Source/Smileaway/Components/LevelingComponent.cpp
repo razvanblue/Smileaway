@@ -3,6 +3,8 @@
 
 #include "LevelingComponent.h"
 
+#include "Evaluation/PreAnimatedState/MovieScenePreAnimatedStateTypes.h"
+
 ULevelingComponent::ULevelingComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -47,5 +49,17 @@ void ULevelingComponent::GainExperience(int32 Amount)
 	}
 	
 	OnExperienceChanged.Broadcast(CurrentXP, XPToNextLevel);
+}
+
+int32 ULevelingComponent::GetTotalXP() const
+{
+	int32 TotalXP = CurrentXP;
+	
+	for (int32 PreviousLevel = 1; PreviousLevel < Level; ++PreviousLevel)
+	{
+		TotalXP += FMath::RoundToInt(XPCurve->GetFloatValue(PreviousLevel));
+	}
+	
+	return TotalXP;
 }
 

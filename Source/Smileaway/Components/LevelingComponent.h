@@ -30,6 +30,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetXPToNextLevel() const { return XPToNextLevel; }
 	
+	UFUNCTION(BlueprintCallable)
+	int32 GetTotalXP() const;
+	
 	UPROPERTY(BlueprintAssignable, Category="Level")
 	FExperienceChangedDelegate OnExperienceChanged;
 	
