@@ -39,6 +39,8 @@ void ASmileawayGameMode::StartPlay()
 			FireZone2 = Cast<AFireZone>(Actor);
 		}
 	}
+	
+	StartTime = GetWorld()->GetTimeSeconds();
 }
 
 void ASmileawayGameMode::AdvanceWave()
@@ -148,6 +150,8 @@ void ASmileawayGameMode::ShowRewardMenu(int32 RewardCount, const FGameplayTag& R
 
 void ASmileawayGameMode::OnEnemyDeath()
 {
+	++DefeatedEnemies;
+	
 	OnRemainingEnemiesChanged.Broadcast(--RemainingEnemies);
 	
 	WaveSpawner->OnEnemyDeath();
@@ -173,6 +177,11 @@ void ASmileawayGameMode::OnRewardConfirmed(FRewardEntry* ConfirmedReward)
 	{
 		AdvanceWave();
 	}
+}
+
+double ASmileawayGameMode::GetGameTime() const
+{
+	return GetWorld()->GetTimeSeconds() - StartTime;
 }
 
 void ASmileawayGameMode::OnPlayerLevelUp(int32 NewLevel)

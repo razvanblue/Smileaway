@@ -47,6 +47,12 @@ public:
 
 	void OnRewardConfirmed(FRewardEntry* SelectedReward);
 	
+	int32 GetCurrentWave() const { return CurrentWave; }
+	
+	int32 GetDefeatedEnemies() const { return DefeatedEnemies; }
+	
+	double GetGameTime() const;
+	
 	UWaveSpawner* GetWaveSpawner() const { return WaveSpawner; } 
 	
 	UPROPERTY(BlueprintAssignable)
@@ -97,4 +103,8 @@ private:
 	TObjectPtr<AFireZone> FireZone2;
 	
 	TArray<TPair<int32, FGameplayTag>> PendingRewardStack;
+	
+	double StartTime = 0.f;
+	
+	int32 DefeatedEnemies = 0;
 };
