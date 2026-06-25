@@ -42,7 +42,7 @@ void ULaunchProjectileNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 		if (auto* Projectile = World->SpawnActorDeferred<AProjectileBase>(ProjectileClass, SpawnTransform, Owner, Character, ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
 		{
 			Projectile->DamageFaction = Character->GetDamageFaction();
-			Projectile->AttackData.AttackMultiplier *= Character->GetCharacterStats()->GetAttack();
+			Projectile->AttackData.AttackMultiplier = AttackMultiplier * Character->GetCharacterStats()->GetAttack();
 			Projectile->FinishSpawning(SpawnTransform, true);
 		}
 	}
