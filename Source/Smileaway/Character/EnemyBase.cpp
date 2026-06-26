@@ -9,6 +9,8 @@
 #include "Smileaway/GameFramework/SmileawayGameMode.h"
 #include "Smileaway/UI/HealthBarWidgetComponent.h"
 
+UE_DEFINE_GAMEPLAY_TAG(TAG_Enemy_Add, "Enemy.Add");
+
 AEnemyBase::AEnemyBase()
 {
 	DamageFaction = EDamageFaction::Enemy;
@@ -44,7 +46,7 @@ void AEnemyBase::OnDeath()
 		Player->GainExperience(LevelingComponent->GetXPToNextLevel());
 	}
 	
-	if (const auto GameMode = Cast<ASmileawayGameMode>(GetWorld()->GetAuthGameMode()))
+	if (auto* GameMode = Cast<ASmileawayGameMode>(GetWorld()->GetAuthGameMode()); GameMode && !ActorHasTag(FName("Enemy.Add")))
 	{
 		GameMode->OnEnemyDeath();
 	}

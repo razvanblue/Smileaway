@@ -100,7 +100,7 @@ void UWaveSpawner::SpawnWaveEntry(const FWaveEntry& Entry)
 		AEnemySpawnPoint* SpawnPoint = Candidates[FMath::RandRange(0, Candidates.Num() - 1)];
 		const FVector SpawnLocation = SpawnPoint->GetActorLocation()
 			+ FVector(FMath::RandRange(-200.f, 200.f), FMath::RandRange(-200.f, 200.f), 0.f);
-		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();;
+		const FRotator SpawnRotation = SpawnPoint->GetActorRotation();
 		
 		auto* SpawnedActor = GetWorld()->SpawnActor(Entry.SpawnClass, &SpawnLocation, &SpawnRotation, SpawnParams);
 		if (auto* SpawnedCharacter = Cast<AEnemyBase>(SpawnedActor))
