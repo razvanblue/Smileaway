@@ -2,6 +2,8 @@
 
 
 #include "SmileawayCharacter.h"
+
+#include "NiagaraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,6 +25,10 @@ ASmileawayCharacter::ASmileawayCharacter()
 	
 	HealthBarWidget = CreateDefaultSubobject<UHealthBarWidgetComponent>(TEXT("Health Bar Component"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
+	
+	BurningEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Burning Effect"));
+	BurningEffect->SetupAttachment(GetMesh());
+	BurningEffect->SetAutoActivate(false);
 	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_HitInteractable, ECR_Overlap);
@@ -146,6 +152,11 @@ void ASmileawayCharacter::TriggerHitbox(FAttackData AttackData)
 void ASmileawayCharacter::GainExperience(int32 Experience)
 {
 	LevelingComponent->GainExperience(Experience);
+}
+
+UNiagaraComponent* ASmileawayCharacter::GetBurningEffect()
+{
+	return BurningEffect;
 }
 
 void ASmileawayCharacter::Attack()

@@ -78,11 +78,23 @@ void AFireZone::DamageOverTime()
 			AngleDegrees += 360.f;
 		}
 		
+		auto* BurningEffect = Target->GetBurningEffect();
 		float FireSpreadAngle = CurrentProgress * 360.f;
 		
 		if (AngleDegrees <= FireSpreadAngle)
 		{
 			IHitInterface::Execute_GetHit(Target, Target->GetActorLocation(), {.Damage = DamagePerTick}, this);
+			if (BurningEffect && !BurningEffect->IsActive())
+			{
+				BurningEffect->Activate();
+			}
+		}
+		else
+		{
+			if (BurningEffect && BurningEffect->IsActive())
+			{
+				BurningEffect->Deactivate();
+			}
 		}
 	}
 }

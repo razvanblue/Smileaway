@@ -11,6 +11,7 @@
 #include "Smileaway/Interfaces/HitInterface.h"
 #include "SmileawayCharacter.generated.h"
 
+class UNiagaraComponent;
 class UCharacterStats;
 class UHealthBarWidgetComponent;
 class ULevelingComponent;
@@ -36,6 +37,8 @@ public:
 	void TriggerHitbox(FAttackData AttackData);
 	
 	void GainExperience(int32 Experience);
+	
+	UNiagaraComponent* GetBurningEffect();
 
 	UCharacterStats* GetCharacterStats() const { return Stats; }
 
@@ -101,6 +104,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = VisualEffects)
 	UCurveFloat* HitFlashCurve;
+	
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	TObjectPtr<UNiagaraComponent> BurningEffect;
 	
 private:
 	
